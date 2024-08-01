@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion d'Articles</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Gestion d'Articles</h1>
+      </header>
+      <nav>
+        <button id="registerBtn">S'inscrire</button>
+        <button id="loginBtn">Se connecter</button>
+        <button id="createArticleBtn" style="display: none">
+          Créer un article
+        </button>
+        <button id="viewArticlesBtn" style="display: none">
+          Voir les articles
+        </button>
+        <button id="searchBtn" style="display: none">
+          Rechercher un article
+        </button>
+        <button id="logoutBtn" style="display: none">Se déconnecter</button>
+      </nav>
+      <div id="searchContainer" style="display: none">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Entrez le code article ou scannez le code-barres"
+        />
+      </div>
+      <main id="content">
+        <p class="intro-text">
+          Bienvenue sur notre plateforme de gestion d'articles. Cette
+          application vous permet de gérer efficacement votre inventaire
+          d'articles.
+        </p>
+        <h2>Veuillez vous connecter ou vous inscrire.</h2>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
