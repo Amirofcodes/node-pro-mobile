@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const connectDB = require('./db');
 const authRoutes = require('./routes/auth');
 const userDataRoutes = require('./routes/userData');
-const articlesRoutes = require('./routes/articles');
 const path = require('path');
 
 const app = express();
@@ -21,7 +20,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/userData', userDataRoutes);
-app.use('/api/articles', articlesRoutes);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
