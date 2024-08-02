@@ -77,11 +77,16 @@ function handleWebSocketMessage(data) {
     case 'newArticle':
       updateArticleList(data.data);
       break;
-    // Ajoutez d'autres cas ici pour gérer différents types de messages
+    case 'updateArticle':
+      updateArticleInList(data.data);
+      break;
+    case 'deleteArticle':
+      removeArticleFromList(data.data.id);
+      break;
+    // Add other cases here for handling different types of messages
   }
 }
 
-// Fonction pour mettre à jour la liste des articles en temps réel
 function updateArticleList(newArticle) {
   const articleList = document.querySelector('.article-grid, ul');
   if (articleList) {
@@ -96,6 +101,20 @@ function updateArticleList(newArticle) {
       div.innerHTML = articleItem;
       articleList.appendChild(div);
     }
+  }
+}
+
+function updateArticleInList(updatedArticle) {
+  const articleItem = document.querySelector(`[data-article-id="${updatedArticle._id}"]`);
+  if (articleItem) {
+    articleItem.innerHTML = generateArticleHTML(updatedArticle);
+  }
+}
+
+function removeArticleFromList(articleId) {
+  const articleItem = document.querySelector(`[data-article-id="${articleId}"]`);
+  if (articleItem) {
+    articleItem.remove();
   }
 }
 
@@ -266,14 +285,97 @@ async function viewArticles(viewType = 'list') {
 // Fonction pour générer le HTML d'un article
 function generateArticleHTML(article) {
   return `
-    <div class="article-item">
+    <div class="article-item" data-article-id="${article._id}">
       <h3>${article.nom}</h3>
       <p>Code: ${article.codeArticle}</p>
       <p>Prix: ${article.prix}€</p>
       <p>Quantité: ${article.quantite}</p>
       <button onclick="viewArticleDetails('${article._id}')">Voir détails</button>
+      <button onclick="editArticle('${article._id}')">Modifier</button>
+      <button onclick="deleteArticle('${article._id}')">Supprimer</button>
     </div>
   `;
+}
+
+async function editArticle(id) {
+  try {
+    const response = await fetch(`/api/articles/${id}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const article = await response.json();
+    showEditArticleForm(article);
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'article:', error);
+  }
+}
+
+function showEditArticleForm(article) {
+  content.innerHTML = `
+    <h2>Modifier l'article</h2>
+    <form id="editArticleForm">
+      <input type="text" id="nom" value="${article.nom}" required>
+      <input type="text" id="codeArticle" value="${article.codeArticle}" required>
+      <textarea id="description">${article.description || ''}</textarea>
+      <input type="text" id="image" value="${article.image || ''}">
+      <input type="number" id="prix" value="${article.prix}" required>
+      <input type="number" id="quantite" value="${article.quantite}" required>
+      <button type="submit">Mettre à jour</button>
+    </form>
+  `;
+  document.getElementById('editArticleForm').addEventListener('submit', (e) => updateArticle(e, article._id));
+}
+
+async function updateArticle(e, id) {
+  e.preventDefault();
+  const articleData = {
+    nom: document.getElementById('nom').value,
+    codeArticle: document.getElementById('codeArticle').value,
+    description: document.getElementById('description').value,
+    image: document.getElementById('image').value,
+    prix: document.getElementById('prix').value,
+    quantite: document.getElementById('quantite').value
+  };
+  try {
+    const response = await fetch(`/api/articles/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(articleData)
+    });
+    if (response.ok) {
+      alert('Article mis à jour avec succès');
+      viewArticles();
+    } else {
+      const data = await response.json();
+      alert(`Erreur: ${data.message}`);
+    }
+  } catch (error) {
+    console.error('Erreur:', error);
+  }
+}
+
+async function deleteArticle(id) {
+  if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+    try {
+      const response = await fetch(`/api/articles/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        alert('Article supprimé avec succès');
+        // The article will be removed from the list via WebSocket update
+      } else {
+        const data = await response.json();
+        alert(`Erreur: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  }
 }
 
 // Fonction pour afficher les détails d'un article
