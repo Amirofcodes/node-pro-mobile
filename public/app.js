@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupWebSocket() {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const host = window.location.host;
-  socket = new WebSocket(`${protocol}//${host}`);
+  socket = new WebSocket(`${protocol}//${host}?token=${token}`);
 
   socket.onopen = () => {
     console.log('WebSocket connecté');
@@ -55,9 +55,20 @@ function setupWebSocket() {
     handleWebSocketMessage(data);
   };
 
-  socket.onclose = () => {
-    console.log('WebSocket déconnecté');
+  socket.onclose = (event) => {
+    console.log('WebSocket déconnecté', event.code, event.reason);
+    if (event.code === 1008) {
+      // Token invalid, logout the user
+      logout();
+    }
   };
+
+  // Setup ping-pong to keep the connection alive
+  setInterval(() => {
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: 'ping' }));
+    }
+  }, 25000);
 }
 
 // Fonction pour gérer les messages WebSocket
