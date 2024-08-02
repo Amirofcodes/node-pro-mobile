@@ -66,8 +66,13 @@ wss.on('close', () => {
   clearInterval(interval);
 });
 
+// Export the WebSocket server
+module.exports = { wss };
+
+// Import and use articlesRoutes after exporting wss
+const articlesRoutes = require('./routes/articles');
+app.use('/api/articles', articlesRoutes);
+
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-
-module.exports = { app, wss };
