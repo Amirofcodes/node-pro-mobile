@@ -1,77 +1,48 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
-const jwt = require('jsonwebtoken');
 const connectDB = require('./db');
 const authRoutes = require('./routes/auth');
 const userDataRoutes = require('./routes/userData');
+const articlesRoutes = require('./routes/articles');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+// Make wss available to our routes
+app.set('wss', wss);
+
 const port = process.env.PORT || 3000;
 
 connectDB();
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/userData', userDataRoutes);
+app.use('/api/articles', articlesRoutes);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-wss.on('connection', (ws, req) => {
-  const token = req.url.split('=')[1];  // Assuming token is passed as a query parameter
+wss.on('connection', (ws) => {
+  console.log('Client connected');
+  
+  ws.on('message', (message) => {
+    console.log('Received message:', message.toString());
+    // Handle incoming messages here
+  });
 
-  if (!token) {
-    ws.close(1008, 'Token not provided');
-    return;
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      ws.close(1008, 'Invalid token');
-      return;
-    }
-
-    ws.userId = decoded.user.id;
-    ws.isAlive = true;
-
-    ws.on('pong', () => {
-      ws.isAlive = true;
-    });
-
-    ws.on('message', (message) => {
-      console.log('Received message:', message);
-      // Handle incoming messages here
-    });
+  ws.on('close', () => {
+    console.log('Client disconnected');
   });
 });
-
-const interval = setInterval(() => {
-  wss.clients.forEach((ws) => {
-    if (ws.isAlive === false) return ws.terminate();
-    
-    ws.isAlive = false;
-    ws.ping(() => {});
-  });
-}, 30000);
-
-wss.on('close', () => {
-  clearInterval(interval);
-});
-
-// Export the WebSocket server
-module.exports = { wss };
-
-// Import and use articlesRoutes after exporting wss
-const articlesRoutes = require('./routes/articles');
-app.use('/api/articles', articlesRoutes);
 
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

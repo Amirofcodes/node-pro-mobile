@@ -2,90 +2,53 @@ const express = require('express');
 const router = express.Router();
 const Article = require('../models/Article');
 const auth = require('../middleware/auth');
-const { wss } = require('../server');
+const { upload, resizeImage } = require('../middleware/upload');
+const WebSocket = require('ws');
 
-// Helper function to broadcast to all clients
-function broadcast(data) {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
+function broadcast(wss, data) {
+  if (wss && wss.clients) {
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(data));
+      }
+    });
+  }
 }
 
-// Route for fetching all articles (protected by authentication)
-router.get('/', auth, async (req, res) => {
+router.post('/', auth, upload.single('image'), resizeImage, async (req, res) => {
   try {
-    const articles = await Article.find();
-    res.json(articles);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Route for creating an article (protected by authentication)
-router.post('/', auth, async (req, res) => {
-  try {
-    const article = new Article(req.body);
+    const articleData = {
+      ...req.body,
+      image: req.file ? {
+        data: req.file.buffer,
+        contentType: 'image/jpeg'
+      } : undefined
+    };
+    
+    const article = new Article(articleData);
     await article.save();
+
+    const broadcastArticle = { ...article.toObject(), image: article.image ? true : false };
     
-    // Broadcast the new article to all connected clients
-    broadcast({ type: 'newArticle', data: article });
-    
-    res.status(201).json(article);
+    // Get the WebSocket server instance
+    const wss = req.app.get('wss');
+    broadcast(wss, { type: 'newArticle', data: broadcastArticle });
+
+    res.status(201).json(broadcastArticle);
   } catch (error) {
+    console.error('Error creating article:', error);
     res.status(400).json({ message: error.message });
   }
 });
 
-// Route for updating an article (protected by authentication)
-router.put('/:id', auth, async (req, res) => {
-  try {
-    const article = await Article.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!article) return res.status(404).json({ message: 'Article not found' });
-    
-    // Broadcast the updated article to all connected clients
-    broadcast({ type: 'updateArticle', data: article });
-    
-    res.json(article);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Route for deleting an article (protected by authentication)
-router.delete('/:id', auth, async (req, res) => {
-  try {
-    const article = await Article.findByIdAndDelete(req.params.id);
-    if (!article) return res.status(404).json({ message: 'Article not found' });
-    
-    // Broadcast the deleted article ID to all connected clients
-    broadcast({ type: 'deleteArticle', data: { id: req.params.id } });
-    
-    res.json({ message: 'Article deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Route for searching articles
-router.get('/search/:codeArticle', auth, async (req, res) => {
-  try {
-    const article = await Article.findOne({ codeArticle: req.params.codeArticle });
-    if (!article) {
-      return res.status(404).json({ message: 'Article non trouvé' });
-    }
-    res.json(article);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Existing routes remain unchanged
 router.get('/', auth, async (req, res) => {
   try {
     const articles = await Article.find();
-    res.json(articles);
+    const articlesWithoutImageData = articles.map(article => ({
+      ...article.toObject(),
+      image: article.image ? true : false
+    }));
+    res.json(articlesWithoutImageData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -95,7 +58,75 @@ router.get('/:id', auth, async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
     if (!article) return res.status(404).json({ message: 'Article not found' });
-    res.json(article);
+    const articleWithoutImageData = {
+      ...article.toObject(),
+      image: article.image ? true : false
+    };
+    res.json(articleWithoutImageData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.put('/:id', auth, upload.single('image'), resizeImage, async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+    if (req.file) {
+      updateData.image = {
+        data: req.file.buffer,
+        contentType: 'image/jpeg'
+      };
+    }
+
+    const article = await Article.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (!article) return res.status(404).json({ message: 'Article not found' });
+
+    const broadcastArticle = { ...article.toObject(), image: article.image ? true : false };
+    broadcast({ type: 'updateArticle', data: broadcastArticle });
+
+    res.json(broadcastArticle);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const article = await Article.findByIdAndDelete(req.params.id);
+    if (!article) return res.status(404).json({ message: 'Article not found' });
+
+    broadcast({ type: 'deleteArticle', data: { id: req.params.id } });
+
+    res.json({ message: 'Article deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get('/:id/image', async (req, res) => {
+  try {
+    const article = await Article.findById(req.params.id);
+    if (!article || !article.image) {
+      return res.status(404).send('Image not found');
+    }
+    res.set('Content-Type', article.image.contentType);
+    res.send(article.image.data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get('/search/:codeArticle', auth, async (req, res) => {
+  try {
+    const article = await Article.findOne({ codeArticle: req.params.codeArticle });
+    if (!article) {
+      return res.status(404).json({ message: 'Article non trouvé' });
+    }
+    const articleWithoutImageData = {
+      ...article.toObject(),
+      image: article.image ? true : false
+    };
+    res.json(articleWithoutImageData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -1,5 +1,4 @@
 import { showLoggedInState, showLoggedOutState } from './ui.js';
-import { setupWebSocket } from './websocket.js';
 
 export let token = localStorage.getItem('token');
 
@@ -12,7 +11,6 @@ export function setupAuthListeners() {
 export function checkAuthState() {
   if (token) {
     showLoggedInState();
-    setupWebSocket();
   } else {
     showLoggedOutState();
   }
@@ -79,7 +77,6 @@ async function login(e) {
       token = data.token;
       localStorage.setItem('token', token);
       showLoggedInState();
-      setupWebSocket();
     } else {
       alert(`Erreur: ${data.message}`);
     }
