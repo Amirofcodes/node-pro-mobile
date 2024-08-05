@@ -1,3 +1,4 @@
+import { API_BASE_URL, DEBUG_MODE } from './config.js';
 import { showLoggedInState, showLoggedOutState } from './ui.js';
 
 export let token = localStorage.getItem('token');
@@ -45,7 +46,8 @@ async function register(e) {
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
   try {
-    const response = await fetch('/api/auth/register', {
+    if (DEBUG_MODE) console.log(`Registering with URL: ${API_BASE_URL}/auth/register`);
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -59,6 +61,7 @@ async function register(e) {
     }
   } catch (error) {
     console.error('Erreur:', error);
+    alert(`Erreur d'inscription: ${error.message}`);
   }
 }
 
@@ -67,21 +70,23 @@ async function login(e) {
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
   try {
-    const response = await fetch('/api/auth/login', {
+    if (DEBUG_MODE) console.log(`Logging in with URL: ${API_BASE_URL}/auth/login`);
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
-    const data = await response.json();
-    if (response.ok) {
-      token = data.token;
-      localStorage.setItem('token', token);
-      showLoggedInState();
-    } else {
-      alert(`Erreur: ${data.message}`);
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData}`);
     }
+    const data = await response.json();
+    token = data.token;
+    localStorage.setItem('token', token);
+    showLoggedInState();
   } catch (error) {
     console.error('Erreur:', error);
+    alert(`Erreur de connexion: ${error.message}`);
   }
 }
 
@@ -90,3 +95,5 @@ function logout() {
   token = null;
   showLoggedOutState();
 }
+
+export { showLoginForm, showRegisterForm };

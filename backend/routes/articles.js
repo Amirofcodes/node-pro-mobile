@@ -24,12 +24,12 @@ router.post('/', auth, upload.single('image'), resizeImage, async (req, res) => 
         contentType: 'image/jpeg'
       } : undefined
     };
-    
+
     const article = new Article(articleData);
     await article.save();
 
     const broadcastArticle = { ...article.toObject(), image: article.image ? true : false };
-    
+
     // Get the WebSocket server instance
     const wss = req.app.get('wss');
     broadcast(wss, { type: 'newArticle', data: broadcastArticle });
@@ -82,7 +82,7 @@ router.put('/:id', auth, upload.single('image'), resizeImage, async (req, res) =
     if (!article) return res.status(404).json({ message: 'Article not found' });
 
     const broadcastArticle = { ...article.toObject(), image: article.image ? true : false };
-    broadcast({ type: 'updateArticle', data: broadcastArticle });
+    broadcast(req.app.get('wss'), { type: 'updateArticle', data: broadcastArticle });
 
     res.json(broadcastArticle);
   } catch (error) {
@@ -95,7 +95,7 @@ router.delete('/:id', auth, async (req, res) => {
     const article = await Article.findByIdAndDelete(req.params.id);
     if (!article) return res.status(404).json({ message: 'Article not found' });
 
-    broadcast({ type: 'deleteArticle', data: { id: req.params.id } });
+    broadcast(req.app.get('wss'), { type: 'deleteArticle', data: { id: req.params.id } });
 
     res.json({ message: 'Article deleted successfully' });
   } catch (error) {
