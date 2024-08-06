@@ -1,8 +1,0 @@
-.db
-svelte-kit
-build-*
-ios
-android
-modules/
-parse-skdocs.cjs
-sk.json
