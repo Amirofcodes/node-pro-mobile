@@ -3,10 +3,7 @@ require('dotenv').config();
 
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGO_URI;
-    if (!mongoURI) {
-      throw new Error('MONGO_URI is not defined in the environment variables');
-    }
+    const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/nodepro';
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,

@@ -3,11 +3,14 @@
     "version": "1.0.0",
     "description": "NODE-PRO Mobile with web and mobile frontends",
     "scripts": {
-      "start:backend": "cd backend && npm start",
-      "start:web": "cd frontend/web && npm start",
-      "dev:backend": "cd backend && npm run dev",
-      "install:all": "npm install && cd backend && npm install && cd ../frontend/web && npm install"
+        "start:backend": "cd backend && npm start",
+        "start:web": "cd frontend/web && npm start",
+        "dev:backend": "cd backend && npm run dev",
+        "install:all": "npm install && cd backend && npm install && cd ../frontend/web && npm install"
     },
     "author": "",
-    "license": "ISC"
-  }
+    "license": "ISC",
+    "dependencies": {
+        "ai-digest": "^1.0.4"
+    }
+}
