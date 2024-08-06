@@ -1,111 +1,159 @@
-# NODE-PRO Mobile
+# Documentation du Projet NODE-PRO
 
-## Project Description
+## Aperçu du Projet
 
-NODE-PRO Mobile is a mobile version of the NODE-PRO web application, developed using React Native. It aims to provide a seamless mobile experience while maintaining synchronization with the web version through a microservices architecture.
+NODE-PRO est une application complète pour la gestion d'articles et d'inventaire. Elle se compose d'un backend Node.js et de deux applications frontend : une interface web construite en JavaScript vanilla, et une application mobile développée avec React Native. Le projet utilise une architecture de microservices et implémente des mises à jour en temps réel via WebSockets pour une synchronisation fluide entre les plateformes.
 
-## C4 Diagram
+## État Actuel du Projet
 
-Here's a high-level C4 diagram of the NODE-PRO Mobile system:
+### Développement Backend
 
-```mermaid
-graph TD
-    subgraph "System Context"
-        U[User] -->|Uses| MM[NODE-PRO Mobile]
-        MM -->|Uses| DB[(MongoDB)]
-    end
+1. **Configuration du Serveur** :
 
-    subgraph "Container View"
-        MM -->|Contains| MF[Mobile Frontend]
-        MM -->|Contains| BE[Backend Services]
-        BE -->|Uses| DB
-        MF <-->|WebSocket| BE
-    end
+   - Mise en place du serveur Express.js avec une configuration appropriée des middleware.
+   - Intégration de WebSocket pour les mises à jour en temps réel.
+   - Implémentation de la gestion CORS pour les requêtes cross-origin.
 
-    subgraph "Component View"
-        MF -->|Contains| AR[Article Management]
-        MF -->|Contains| UM[User Management]
-        MF -->|Contains| IS[Image Storage]
-        BE -->|Contains| AS[Authentication Service]
-        BE -->|Contains| ARS[Article Service]
-        BE -->|Contains| US[User Service]
-        BE -->|Contains| WS[WebSocket Service]
-    end
-```
+2. **Connexion à la Base de Données** :
 
-## Design Patterns
+   - Configuration de la connexion MongoDB avec gestion des erreurs et journalisation.
+   - Mise en place du pooling de connexions pour améliorer les performances.
 
-The project utilizes several design patterns:
+3. **Authentification** :
 
-1. **MVC (Model-View-Controller)**
-2. **Repository Pattern**
-3. **Observer Pattern**
-4. **Singleton Pattern**
-5. **Middleware Pattern**
+   - Implémentation de l'authentification basée sur JWT.
+   - Création de routes pour l'inscription et la connexion des utilisateurs.
+   - Développement de middleware pour la protection des routes.
 
-## Technology Stack
+4. **Gestion des Articles** :
 
-- **Frontend**:
+   - Implémentation des opérations CRUD pour les articles.
+   - Ajout d'une fonctionnalité de recherche pour les articles.
+   - Intégration du téléchargement et du traitement d'images pour les articles.
 
-  - React Native
-  - Expo
-  - WebSocket client
+5. **Mises à Jour en Temps Réel** :
 
-- **Backend**:
+   - Implémentation d'un serveur WebSocket pour la communication en temps réel.
+   - Configuration de la diffusion pour les mises à jour, créations et suppressions d'articles.
 
-  - Node.js
-  - Express.js
-  - MongoDB (with Mongoose ODM)
-  - WebSocket (ws library)
-  - JSON Web Tokens (JWT)
+6. **Gestion des Erreurs et Journalisation** :
+   - Implémentation d'une gestion complète des erreurs dans tout le backend.
+   - Ajout de journalisation pour les opérations importantes et les erreurs.
 
-- **DevOps**:
-  - Git
-  - npm
+### Développement Frontend Web
 
-## Key Objectives
+1. **Structure du Projet** :
 
-1. Maintain feature parity with the web version
-2. Ensure data consistency across platforms
-3. Optimize mobile user experience
-4. Implement efficient state management
-5. Utilize React Native and Expo best practices
+   - Organisation du code frontend en fichiers JavaScript modulaires.
+   - Implémentation d'une séparation appropriée des préoccupations (auth, articles, UI).
 
-## Development Phases
+2. **Authentification** :
 
-1. Set up React Native project structure
-2. Adapt backend to microservices architecture
-3. Implement user authentication in mobile app
-4. Develop article management features
-5. Integrate real-time synchronization
-6. Implement barcode scanning functionality
-7. Optimize performance and user interface
-8. Conduct thorough testing and debugging
+   - Développement de la fonctionnalité de connexion.
+   - Implémentation de la fonctionnalité d'inscription des utilisateurs.
+   - Création de formulaires séparés pour la connexion et l'inscription.
+   - Mise en place de l'authentification basée sur les tokens avec stockage local.
 
-## Challenges
+3. **Gestion des Articles** :
 
-- Efficient state management in React Native
-- Secure authentication implementation in a mobile environment
-- Smooth real-time synchronization between web and mobile versions
-- Application performance optimization and load time reduction
-- Offline mode handling and data persistence
+   - Création d'interfaces pour visualiser, créer, modifier et supprimer des articles.
+   - Implémentation du téléchargement et de l'affichage d'images pour les articles.
 
-## Recent Updates
+4. **Fonctionnalité de Recherche** :
 
-1. Implemented image upload and storage functionality for articles
-2. Refactored backend to use microservices architecture
-3. Added WebSocket support for real-time updates
-4. Updated frontend to handle image uploads and display
-5. Improved error handling and logging throughout the application
+   - Développement d'une interface de recherche pour trouver des articles par code.
 
-## Next Steps
+5. **Mises à Jour en Temps Réel** :
 
-1. Implement offline support for the mobile application
-2. Add unit and integration tests for frontend and backend
-3. Implement a caching layer to improve performance
-4. Strengthen security measures, including rate limiting and input validation
-5. Develop a CI/CD pipeline for automated testing and deployment
+   - Intégration d'un client WebSocket pour recevoir des mises à jour en temps réel.
 
-## About
+6. **UI/UX** :
+   - Implémentation d'un design responsif utilisant CSS.
+   - Création d'une navigation intuitive entre les différentes sections de l'application.
 
-This project is an extension of the original NODE-PRO web application, aiming to provide a comprehensive mobile solution while leveraging the microservices architecture for seamless integration between web and mobile platforms.
+### Développement Frontend Mobile
+
+1. **Structure du Projet** :
+
+   - Organisation du code frontend en composants modulaires.
+   - Implémentation d'une séparation appropriée des préoccupations (auth, articles, UI).
+
+2. **Authentification** :
+
+   - Développement de la fonctionnalité de connexion.
+   - Implémentation de la fonctionnalité d'inscription des utilisateurs.
+   - Création d'écrans séparés pour la connexion et l'inscription.
+   - Mise en place de l'authentification basée sur les tokens avec stockage sécurisé.
+
+3. **Gestion des Articles** :
+
+   - Création d'interfaces pour visualiser, créer, modifier et supprimer des articles.
+   - Implémentation du téléchargement et de l'affichage d'images pour les articles.
+
+4. **Fonctionnalité de Recherche** :
+
+   - Développement d'une interface de recherche pour trouver des articles par code.
+
+5. **Mises à Jour en Temps Réel** :
+
+   - Intégration d'un client WebSocket pour recevoir des mises à jour en temps réel.
+
+6. **UI/UX** :
+
+   - Implémentation d'un design responsif pour différentes tailles d'écran.
+   - Création d'une navigation intuitive entre les différentes sections de l'application en utilisant React Navigation.
+
+7. **Gestion des Erreurs** :
+   - Amélioration de la gestion des erreurs et des mécanismes de feedback utilisateur.
+   - Ajout de journalisation détaillée pour le débogage.
+
+## Stack Technique
+
+- **Backend** : Node.js, Express.js, MongoDB, Mongoose, WebSocket
+- **Frontend Web** : HTML5, CSS3, JavaScript Vanilla, API Fetch
+- **Frontend Mobile** : React Native avec Expo, React Navigation, Axios
+- **Authentification** : JSON Web Tokens (JWT)
+- **Téléchargement de Fichiers** : Multer, Sharp pour le traitement d'images
+- **Communication en Temps Réel** : WebSocket (bibliothèque ws)
+- **Gestion d'État** : État local (Web), React Hooks (Mobile)
+- **Navigation** : Routage personnalisé (Web), React Navigation (Mobile)
+
+## Points de Terminaison API
+
+### Authentification
+
+- POST `/api/auth/register` : Inscription d'un nouvel utilisateur
+- POST `/api/auth/login` : Connexion de l'utilisateur
+
+### Articles
+
+- GET `/api/articles` : Récupération de tous les articles
+- GET `/api/articles/:id` : Récupération d'un article spécifique
+- POST `/api/articles` : Création d'un nouvel article
+- PUT `/api/articles/:id` : Mise à jour d'un article existant
+- DELETE `/api/articles/:id` : Suppression d'un article
+- GET `/api/articles/:id/image` : Récupération de l'image d'un article
+- GET `/api/articles/search/:codeArticle` : Recherche d'un article par code
+
+## Événements WebSocket
+
+- `newArticle` : Diffusion lors de la création d'un nouvel article
+- `updateArticle` : Diffusion lors de la mise à jour d'un article
+- `deleteArticle` : Diffusion lors de la suppression d'un article
+
+## Mises à Jour Récentes
+
+1. Implémentation de la fonctionnalité d'inscription des utilisateurs dans les frontends web et mobile.
+2. Ajout de la fonctionnalité de mise à jour en temps réel sur toutes les plateformes.
+3. Amélioration de la gestion des erreurs et ajout d'une journalisation plus détaillée pour les processus d'authentification.
+4. Amélioration du design responsif pour le frontend web.
+5. Optimisation des performances et de l'UI/UX de l'application mobile.
+
+## Prochaines Étapes
+
+1. Implémentation du support hors ligne pour l'application mobile.
+2. Ajout de tests unitaires et d'intégration pour le backend, le frontend web et le frontend mobile.
+3. Implémentation d'une couche de mise en cache pour améliorer les performances sur toutes les plateformes.
+4. Renforcement des mesures de sécurité, y compris la limitation de débit et la validation des entrées.
+5. Développement d'un pipeline CI/CD pour l'automatisation des tests et du déploiement de tous les composants.
+6. Amélioration des mécanismes de synchronisation des données entre les plateformes.
