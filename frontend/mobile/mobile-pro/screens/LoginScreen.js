@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { login } from '../services/authManager';
 
 const LoginScreen = ({ navigation }) => {
@@ -12,12 +12,12 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
 
-    console.log('Attempting login with:', username);
     try {
+      console.log('Attempting login with:', username);
       const success = await login(username, password);
       console.log('Login result:', success);
       if (success) {
-        navigation.navigate('Home');
+        navigation.replace('Home');
       } else {
         Alert.alert('Login Failed', 'Please check your credentials and try again.');
       }
@@ -29,6 +29,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>NODE-PRO Mobile</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
@@ -44,6 +45,12 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry
       />
       <Button title="Login" onPress={handleLogin} />
+      <TouchableOpacity 
+        style={styles.registerButton} 
+        onPress={() => navigation.navigate('Register')}
+      >
+        <Text style={styles.registerText}>Don't have an account? Register</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -54,6 +61,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
   input: {
     height: 40,
     borderColor: 'gray',
@@ -61,6 +74,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
+  },
+  registerButton: {
+    marginTop: 20,
+  },
+  registerText: {
+    color: 'blue',
+    textAlign: 'center',
   },
 });
 

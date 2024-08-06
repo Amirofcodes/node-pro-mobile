@@ -30,15 +30,24 @@ const removeToken = async () => {
 
 export const login = async (username, password) => {
   try {
-    console.log('Sending login request to:', api.defaults.baseURL);
     const response = await api.post('/auth/login', { username, password });
-    console.log('Login response:', response.data);
     const { token } = response.data;
     await storeToken(token);
     setAuthToken(token);
     return true;
   } catch (error) {
     console.error('Login failed:', error.response ? error.response.data : error.message);
+    return false;
+  }
+};
+
+export const register = async (username, password) => {
+  try {
+    const response = await api.post('/auth/register', { username, password });
+    console.log('Register response:', response.status, response.data);
+    return response.status === 201 || response.status === 200;
+  } catch (error) {
+    console.error('Registration failed:', error.response ? error.response.data : error.message);
     return false;
   }
 };
