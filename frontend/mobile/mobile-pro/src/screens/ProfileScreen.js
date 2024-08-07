@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { logout } from '../services/authManager';
 import { Ionicons } from '@expo/vector-icons';
+import { logout } from '../services/authManager';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -21,91 +21,91 @@ const ProfileScreen = () => {
     }
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-      padding: 20,
-    },
-    header: {
-      alignItems: 'center',
-      marginBottom: 30,
-    },
-    avatar: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      backgroundColor: theme.colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: 10,
-    },
-    username: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: theme.colors.text,
-      marginTop: 10,
-    },
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: theme.colors.text,
-      marginBottom: 15,
-    },
-    infoItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 15,
-    },
-    infoText: {
-      fontSize: 16,
-      color: theme.colors.text,
-      marginLeft: 10,
-    },
-    logoutButton: {
-      backgroundColor: theme.colors.notification,
-      padding: 15,
-      borderRadius: 5,
-      alignItems: 'center',
-      marginTop: 30,
-    },
-    logoutButtonText: {
-      color: theme.colors.white,
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-  });
-
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.header}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={50} color={theme.colors.white} />
+        <View style={[styles.avatar, { backgroundColor: theme.colors.primary }]}>
+          <Ionicons name="person" size={50} color="#fff" />
         </View>
-        <Text style={styles.username}>User Profile</Text>
+        <Text style={[styles.username, { color: theme.colors.text }]}>User Profile</Text>
       </View>
 
-      <Text style={styles.sectionTitle}>Account Information</Text>
-      <View style={styles.infoItem}>
-        <Ionicons name="person-outline" size={24} color={theme.colors.text} />
-        <Text style={styles.infoText}>Username: John Doe</Text>
-      </View>
-      <View style={styles.infoItem}>
-        <Ionicons name="mail-outline" size={24} color={theme.colors.text} />
-        <Text style={styles.infoText}>Email: john.doe@example.com</Text>
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Account Information</Text>
+        <View style={styles.infoItem}>
+          <Ionicons name="person-outline" size={24} color={theme.colors.text} />
+          <Text style={[styles.infoText, { color: theme.colors.text }]}>Username: John Doe</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Ionicons name="mail-outline" size={24} color={theme.colors.text} />
+          <Text style={[styles.infoText, { color: theme.colors.text }]}>Email: john.doe@example.com</Text>
+        </View>
       </View>
 
-      <Text style={[styles.sectionTitle, { marginTop: 20 }]}>App Information</Text>
-      <View style={styles.infoItem}>
-        <Ionicons name="information-circle-outline" size={24} color={theme.colors.text} />
-        <Text style={styles.infoText}>Version: 1.0.0</Text>
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>App Information</Text>
+        <View style={styles.infoItem}>
+          <Ionicons name="information-circle-outline" size={24} color={theme.colors.text} />
+          <Text style={[styles.infoText, { color: theme.colors.text }]}>Version: 1.0.0</Text>
+        </View>
       </View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  username: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  section: {
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  infoText: {
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  logoutButton: {
+    backgroundColor: '#FF3B30',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
 
 export default ProfileScreen;

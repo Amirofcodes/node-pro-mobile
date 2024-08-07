@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Image } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  StyleSheet, 
+  ScrollView, 
+  Alert, 
+  Image,
+  ActivityIndicator,
+  SafeAreaView
+} from 'react-native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
 
-const CreateArticleScreen = ({ navigation }) => {
-  const theme = useTheme();
+const CreateArticleScreen = () => {
   const [nom, setNom] = useState('');
   const [codeArticle, setCodeArticle] = useState('');
   const [description, setDescription] = useState('');
@@ -13,6 +24,9 @@ const CreateArticleScreen = ({ navigation }) => {
   const [quantite, setQuantite] = useState('');
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  
+  const navigation = useNavigation();
+  const theme = useTheme();
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -27,28 +41,11 @@ const CreateArticleScreen = ({ navigation }) => {
     }
   };
 
-  const validateForm = () => {
-    if (!nom.trim()) {
-      Alert.alert('Error', 'Name is required');
-      return false;
-    }
-    if (!codeArticle.trim()) {
-      Alert.alert('Error', 'Article Code is required');
-      return false;
-    }
-    if (!prix.trim() || isNaN(parseFloat(prix))) {
-      Alert.alert('Error', 'Price must be a valid number');
-      return false;
-    }
-    if (!quantite.trim() || isNaN(parseInt(quantite))) {
-      Alert.alert('Error', 'Quantity must be a valid integer');
-      return false;
-    }
-    return true;
-  };
-
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+    if (!nom.trim() || !codeArticle.trim() || !prix.trim() || !quantite.trim()) {
+      Alert.alert('Error', 'Please fill in all required fields');
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -77,146 +74,127 @@ const CreateArticleScreen = ({ navigation }) => {
       Alert.alert('Success', 'Article created successfully');
       navigation.goBack();
     } catch (error) {
-      console.error('Error creating article:', error.response ? error.response.data : error.message);
+      console.error('Error creating article:', error);
       Alert.alert('Error', 'Failed to create article');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
-    formContainer: {
-      padding: theme.spacing.m,
-    },
-    label: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: theme.colors.text,
-      marginBottom: theme.spacing.s,
-    },
-    input: {
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      borderRadius: 5,
-      padding: theme.spacing.s,
-      marginBottom: theme.spacing.m,
-      fontSize: 16,
-      backgroundColor: theme.colors.surface,
-      color: theme.colors.text,
-    },
-    textArea: {
-      height: 100,
-      textAlignVertical: 'top',
-    },
-    imageButton: {
-      backgroundColor: theme.colors.primary,
-      padding: theme.spacing.m,
-      borderRadius: 5,
-      alignItems: 'center',
-      marginBottom: theme.spacing.m,
-    },
-    imageButtonText: {
-      color: theme.colors.white,
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    image: {
-      width: '100%',
-      height: 200,
-      resizeMode: 'cover',
-      marginBottom: theme.spacing.m,
-      borderRadius: 5,
-    },
-    submitButton: {
-      backgroundColor: theme.colors.primary,
-      padding: theme.spacing.m,
-      borderRadius: 5,
-      alignItems: 'center',
-    },
-    submitButtonText: {
-      color: theme.colors.white,
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    disabledButton: {
-      opacity: 0.7,
-    },
-  });
-
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.formContainer}>
-        <Text style={styles.label}>Name:</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <ScrollView>
+        <Text style={[styles.title, { color: theme.colors.text }]}>Create New Article</Text>
+        
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.colors.text, borderColor: theme.colors.border }]}
+          placeholder="Name"
+          placeholderTextColor={theme.colors.text + '80'}
           value={nom}
           onChangeText={setNom}
-          placeholder="Enter article name"
-          placeholderTextColor={theme.colors.text + '80'}
         />
-
-        <Text style={styles.label}>Article Code:</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.colors.text, borderColor: theme.colors.border }]}
+          placeholder="Article Code"
+          placeholderTextColor={theme.colors.text + '80'}
           value={codeArticle}
           onChangeText={setCodeArticle}
-          placeholder="Enter article code"
-          placeholderTextColor={theme.colors.text + '80'}
         />
-
-        <Text style={styles.label}>Description:</Text>
         <TextInput
-          style={[styles.input, styles.textArea]}
+          style={[styles.input, styles.textArea, { color: theme.colors.text, borderColor: theme.colors.border }]}
+          placeholder="Description"
+          placeholderTextColor={theme.colors.text + '80'}
           value={description}
           onChangeText={setDescription}
           multiline
-          numberOfLines={4}
-          placeholder="Enter article description"
-          placeholderTextColor={theme.colors.text + '80'}
         />
-
-        <Text style={styles.label}>Price:</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.colors.text, borderColor: theme.colors.border }]}
+          placeholder="Price"
+          placeholderTextColor={theme.colors.text + '80'}
           value={prix}
           onChangeText={setPrix}
           keyboardType="numeric"
-          placeholder="Enter price"
-          placeholderTextColor={theme.colors.text + '80'}
         />
-
-        <Text style={styles.label}>Quantity:</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: theme.colors.text, borderColor: theme.colors.border }]}
+          placeholder="Quantity"
+          placeholderTextColor={theme.colors.text + '80'}
           value={quantite}
           onChangeText={setQuantite}
           keyboardType="numeric"
-          placeholder="Enter quantity"
-          placeholderTextColor={theme.colors.text + '80'}
         />
-
+        
         <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
-          <Text style={styles.imageButtonText}>Pick an image</Text>
+          <Ionicons name="image-outline" size={24} color={theme.colors.primary} />
+          <Text style={[styles.imageButtonText, { color: theme.colors.primary }]}>Pick an image</Text>
         </TouchableOpacity>
-
-        {image && <Image source={{ uri: image }} style={styles.image} />}
-
+        
+        {image && <Image source={{ uri: image }} style={styles.imagePreview} />}
+        
         <TouchableOpacity
-          style={[styles.submitButton, isLoading && styles.disabledButton]}
+          style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}
           onPress={handleSubmit}
           disabled={isLoading}
         >
-          <Text style={styles.submitButtonText}>
-            {isLoading ? 'Creating...' : 'Create Article'}
-          </Text>
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.submitButtonText}>Create Article</Text>
+          )}
         </TouchableOpacity>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  imageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  imageButtonText: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  imagePreview: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    marginBottom: 15,
+    borderRadius: 5,
+  },
+  submitButton: {
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
 
 export default CreateArticleScreen;

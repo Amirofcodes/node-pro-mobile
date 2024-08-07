@@ -7,7 +7,7 @@ const DEV_API_BASE_URL = Platform.select({
 });
 
 // If you're testing on a physical device, replace 'localhost' with your computer's local IP address
-const LOCAL_MACHINE_IP = '10.21.6.10'; // Replace with your actual IP
+const LOCAL_MACHINE_IP = '192.168.1.16'; // Replace with your actual IP
 const PHYSICAL_DEVICE_API_BASE_URL = `http://${LOCAL_MACHINE_IP}:3000/api`;
 
 const config = {

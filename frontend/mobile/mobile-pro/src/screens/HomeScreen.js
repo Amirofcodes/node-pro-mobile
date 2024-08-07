@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -10,7 +10,6 @@ const HomeScreen = () => {
   const menuItems = [
     { title: 'View Articles', icon: 'list', screen: 'Articles', color: '#4CAF50' },
     { title: 'Create New Article', icon: 'add-circle', screen: 'CreateArticle', color: '#2196F3' },
-    { title: 'Search Articles', icon: 'search', screen: 'Articles', color: '#FFC107' },
     { title: 'My Profile', icon: 'person', screen: 'Profile', color: '#9C27B0' },
   ];
 
@@ -25,77 +24,63 @@ const HomeScreen = () => {
     </TouchableOpacity>
   );
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
-    header: {
-      backgroundColor: theme.colors.primary,
-      padding: 20,
-      alignItems: 'center',
-    },
-    headerText: {
-      color: theme.colors.white,
-      fontSize: 24,
-      fontWeight: 'bold',
-    },
-    subHeaderText: {
-      color: theme.colors.white,
-      fontSize: 16,
-      marginTop: 5,
-    },
-    content: {
-      flex: 1,
-      padding: 20,
-    },
-    menuGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'space-between',
-    },
-    menuItem: {
-      width: '48%',
-      aspectRatio: 1,
-      borderRadius: 10,
-      padding: 15,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: 15,
-    },
-    menuItemText: {
-      color: '#fff',
-      marginTop: 10,
-      fontSize: 16,
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    footer: {
-      padding: 20,
-      alignItems: 'center',
-    },
-    footerText: {
-      color: theme.colors.text,
-      fontSize: 14,
-    },
-  });
-
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Welcome to NODE-PRO Mobile</Text>
-        <Text style={styles.subHeaderText}>Manage your articles with ease</Text>
+        <Text style={[styles.headerText, { color: theme.colors.text }]}>NODE-PRO Mobile</Text>
+        <Text style={[styles.subHeaderText, { color: theme.colors.text }]}>Manage your articles with ease</Text>
       </View>
-      <View style={styles.content}>
-        <View style={styles.menuGrid}>
-          {menuItems.map(renderMenuItem)}
-        </View>
+      <View style={styles.menuGrid}>
+        {menuItems.map(renderMenuItem)}
       </View>
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>© 2024 NODE-PRO Mobile</Text>
-      </View>
-    </ScrollView>
+      <Text style={[styles.footerText, { color: theme.colors.text }]}>© 2024 NODE-PRO Mobile</Text>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  header: {
+    alignItems: 'center',
+    marginVertical: 30,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  subHeaderText: {
+    fontSize: 16,
+    marginTop: 5,
+  },
+  menuGrid: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  menuItem: {
+    width: '48%',
+    aspectRatio: 1,
+    borderRadius: 10,
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 15,
+  },
+  menuItemText: {
+    color: '#fff',
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  footerText: {
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+});
 
 export default HomeScreen;
