@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ActivityIndicator, Image } from 'react-native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import { debounce } from 'lodash';
 import api from '../services/api';
+import { Ionicons } from '@expo/vector-icons';
 
 const ArticleListScreen = () => {
   const [articles, setArticles] = useState([]);
@@ -11,18 +12,11 @@ const ArticleListScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigation = useNavigation();
+  const theme = useTheme();
 
   useEffect(() => {
     fetchArticles();
   }, []);
-
-  useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredArticles(articles);
-    } else {
-      performSearch(searchQuery);
-    }
-  }, [searchQuery]);
 
   const fetchArticles = async () => {
     try {
@@ -39,38 +33,39 @@ const ArticleListScreen = () => {
     }
   };
 
-  const performSearch = debounce(async (query) => {
-    // First, perform local filtering
-    const localFiltered = articles.filter(article =>
-      article.nom.toLowerCase().includes(query.toLowerCase()) ||
-      article.codeArticle.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredArticles(localFiltered);
-
-    // If the query looks like it could be a complete article code, perform API search
-    if (query.length >= 3) {
-      try {
-        setIsLoading(true);
-        const response = await api.get(`/articles/search/${query}`);
-        const apiResults = Array.isArray(response.data) ? response.data : [response.data];
-        
-        // Merge API results with local results, removing duplicates
-        const mergedResults = [...new Set([...apiResults, ...localFiltered])];
-        setFilteredArticles(mergedResults);
-      } catch (error) {
-        console.error('Error searching articles:', error);
-        // Don't set an error message here, as we still have local results
-      } finally {
-        setIsLoading(false);
+  const performSearch = useCallback(
+    debounce(async (query) => {
+      if (query.trim() === '') {
+        setFilteredArticles(articles);
+        return;
       }
-    }
-  }, 300);
+
+      const localFiltered = articles.filter(article =>
+        article.nom.toLowerCase().includes(query.toLowerCase()) ||
+        article.codeArticle.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredArticles(localFiltered);
+
+      if (query.length >= 3) {
+        try {
+          setIsLoading(true);
+          const response = await api.get(`/articles/search/${query}`);
+          const apiResults = Array.isArray(response.data) ? response.data : [response.data];
+          const mergedResults = [...new Set([...apiResults, ...localFiltered])];
+          setFilteredArticles(mergedResults);
+        } catch (error) {
+          console.error('Error searching articles:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }, 300),
+    [articles]
+  );
 
   const handleSearchChange = (text) => {
     setSearchQuery(text);
-    if (text.trim() === '') {
-      setFilteredArticles(articles);
-    }
+    performSearch(text);
   };
 
   const renderArticleItem = ({ item }) => (
@@ -78,10 +73,100 @@ const ArticleListScreen = () => {
       style={styles.articleItem}
       onPress={() => navigation.navigate('ArticleDetail', { articleId: item._id })}
     >
-      <Text style={styles.articleTitle}>{item.nom}</Text>
-      <Text>Code: {item.codeArticle}</Text>
+      {item.image ? (
+        <Image
+          source={{ uri: `${api.defaults.baseURL}/articles/${item._id}/image` }}
+          style={styles.articleImage}
+        />
+      ) : (
+        <View style={[styles.articleImage, styles.placeholderImage]}>
+          <Ionicons name="image-outline" size={24} color={theme.colors.text} />
+        </View>
+      )}
+      <View style={styles.articleInfo}>
+        <Text style={styles.articleTitle}>{item.nom}</Text>
+        <Text style={styles.articleCode}>Code: {item.codeArticle}</Text>
+        <Text style={styles.articlePrice}>Price: {item.prix}€</Text>
+      </View>
     </TouchableOpacity>
   );
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    searchContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: theme.spacing.m,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
+    },
+    searchInput: {
+      flex: 1,
+      height: 40,
+      borderColor: theme.colors.border,
+      borderWidth: 1,
+      borderRadius: 20,
+      paddingHorizontal: theme.spacing.m,
+      color: theme.colors.text,
+    },
+    createButton: {
+      backgroundColor: theme.colors.primary,
+      padding: theme.spacing.m,
+      borderRadius: 25,
+      alignItems: 'center',
+      margin: theme.spacing.m,
+    },
+    createButtonText: {
+      color: theme.colors.white,
+      fontWeight: 'bold',
+    },
+    articleItem: {
+      flexDirection: 'row',
+      padding: theme.spacing.m,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
+    },
+    articleImage: {
+      width: 80,
+      height: 80,
+      borderRadius: 8,
+      marginRight: theme.spacing.m,
+    },
+    placeholderImage: {
+      backgroundColor: theme.colors.border,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    articleInfo: {
+      flex: 1,
+      justifyContent: 'center',
+    },
+    articleTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: theme.colors.text,
+      marginBottom: theme.spacing.s,
+    },
+    articleCode: {
+      fontSize: 14,
+      color: theme.colors.text,
+      opacity: 0.7,
+    },
+    articlePrice: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+      marginTop: theme.spacing.s,
+    },
+    errorText: {
+      color: theme.colors.notification,
+      textAlign: 'center',
+      marginTop: theme.spacing.m,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -89,14 +174,10 @@ const ArticleListScreen = () => {
         <TextInput
           style={styles.searchInput}
           placeholder="Search by name or code..."
+          placeholderTextColor={theme.colors.text + '80'}
           value={searchQuery}
           onChangeText={handleSearchChange}
         />
-        {searchQuery.trim() !== '' && (
-          <TouchableOpacity style={styles.clearButton} onPress={() => handleSearchChange('')}>
-            <Text style={styles.clearButtonText}>Clear</Text>
-          </TouchableOpacity>
-        )}
       </View>
       <TouchableOpacity
         style={styles.createButton}
@@ -104,74 +185,20 @@ const ArticleListScreen = () => {
       >
         <Text style={styles.createButtonText}>Create New Article</Text>
       </TouchableOpacity>
-      {isLoading && <ActivityIndicator size="large" color="#007AFF" />}
+      {isLoading && <ActivityIndicator size="large" color={theme.colors.primary} />}
       {error && <Text style={styles.errorText}>{error}</Text>}
       <FlatList
         data={filteredArticles}
         renderItem={renderArticleItem}
         keyExtractor={(item) => item._id}
-        ListEmptyComponent={<Text style={styles.emptyListText}>No articles found</Text>}
+        ListEmptyComponent={
+          <Text style={[styles.errorText, { marginTop: 20 }]}>
+            {searchQuery ? 'No articles found' : 'No articles available'}
+          </Text>
+        }
       />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
-  },
-  clearButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    marginLeft: 10,
-  },
-  clearButtonText: {
-    color: '#007AFF',
-    fontWeight: 'bold',
-  },
-  articleItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  articleTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  createButton: {
-    backgroundColor: '#007AFF',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  createButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  emptyListText: {
-    textAlign: 'center',
-    marginTop: 20,
-  },
-});
 
 export default ArticleListScreen;

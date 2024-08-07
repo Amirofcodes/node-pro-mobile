@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, Alert, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Image } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import api from '../services/api';
 
 const CreateArticleScreen = ({ navigation }) => {
+  const theme = useTheme();
   const [nom, setNom] = useState('');
   const [codeArticle, setCodeArticle] = useState('');
   const [description, setDescription] = useState('');
@@ -68,7 +70,7 @@ const CreateArticleScreen = ({ navigation }) => {
         });
       }
 
-      const response = await api.post('/articles', formData, {
+      await api.post('/articles', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -82,59 +84,139 @@ const CreateArticleScreen = ({ navigation }) => {
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    formContainer: {
+      padding: theme.spacing.m,
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: theme.colors.text,
+      marginBottom: theme.spacing.s,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      borderRadius: 5,
+      padding: theme.spacing.s,
+      marginBottom: theme.spacing.m,
+      fontSize: 16,
+      backgroundColor: theme.colors.surface,
+      color: theme.colors.text,
+    },
+    textArea: {
+      height: 100,
+      textAlignVertical: 'top',
+    },
+    imageButton: {
+      backgroundColor: theme.colors.primary,
+      padding: theme.spacing.m,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginBottom: theme.spacing.m,
+    },
+    imageButtonText: {
+      color: theme.colors.white,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    image: {
+      width: '100%',
+      height: 200,
+      resizeMode: 'cover',
+      marginBottom: theme.spacing.m,
+      borderRadius: 5,
+    },
+    submitButton: {
+      backgroundColor: theme.colors.primary,
+      padding: theme.spacing.m,
+      borderRadius: 5,
+      alignItems: 'center',
+    },
+    submitButtonText: {
+      color: theme.colors.white,
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    disabledButton: {
+      opacity: 0.7,
+    },
+  });
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.label}>Name:</Text>
-      <TextInput style={styles.input} value={nom} onChangeText={setNom} />
+      <View style={styles.formContainer}>
+        <Text style={styles.label}>Name:</Text>
+        <TextInput
+          style={styles.input}
+          value={nom}
+          onChangeText={setNom}
+          placeholder="Enter article name"
+          placeholderTextColor={theme.colors.text + '80'}
+        />
 
-      <Text style={styles.label}>Article Code:</Text>
-      <TextInput style={styles.input} value={codeArticle} onChangeText={setCodeArticle} />
+        <Text style={styles.label}>Article Code:</Text>
+        <TextInput
+          style={styles.input}
+          value={codeArticle}
+          onChangeText={setCodeArticle}
+          placeholder="Enter article code"
+          placeholderTextColor={theme.colors.text + '80'}
+        />
 
-      <Text style={styles.label}>Description:</Text>
-      <TextInput style={styles.input} value={description} onChangeText={setDescription} multiline />
+        <Text style={styles.label}>Description:</Text>
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          value={description}
+          onChangeText={setDescription}
+          multiline
+          numberOfLines={4}
+          placeholder="Enter article description"
+          placeholderTextColor={theme.colors.text + '80'}
+        />
 
-      <Text style={styles.label}>Price:</Text>
-      <TextInput style={styles.input} value={prix} onChangeText={setPrix} keyboardType="numeric" />
+        <Text style={styles.label}>Price:</Text>
+        <TextInput
+          style={styles.input}
+          value={prix}
+          onChangeText={setPrix}
+          keyboardType="numeric"
+          placeholder="Enter price"
+          placeholderTextColor={theme.colors.text + '80'}
+        />
 
-      <Text style={styles.label}>Quantity:</Text>
-      <TextInput style={styles.input} value={quantite} onChangeText={setQuantite} keyboardType="numeric" />
+        <Text style={styles.label}>Quantity:</Text>
+        <TextInput
+          style={styles.input}
+          value={quantite}
+          onChangeText={setQuantite}
+          keyboardType="numeric"
+          placeholder="Enter quantity"
+          placeholderTextColor={theme.colors.text + '80'}
+        />
 
-      <Button title="Pick an image" onPress={pickImage} />
-      {image && <Image source={{ uri: image }} style={styles.image} />}
+        <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+          <Text style={styles.imageButtonText}>Pick an image</Text>
+        </TouchableOpacity>
 
-      <Button title="Create Article" onPress={handleSubmit} disabled={isLoading} />
-      {isLoading && <Text style={styles.loadingText}>Creating article...</Text>}
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+
+        <TouchableOpacity
+          style={[styles.submitButton, isLoading && styles.disabledButton]}
+          onPress={handleSubmit}
+          disabled={isLoading}
+        >
+          <Text style={styles.submitButtonText}>
+            {isLoading ? 'Creating...' : 'Create Article'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  image: {
-    width: 200,
-    height: 200,
-    resizeMode: 'contain',
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  loadingText: {
-    textAlign: 'center',
-    marginTop: 10,
-  },
-});
 
 export default CreateArticleScreen;

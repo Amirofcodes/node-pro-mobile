@@ -1,27 +1,34 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import { register } from '../services/authManager';
+import { Ionicons } from '@expo/vector-icons';
 
-const RegisterScreen = ({ navigation }) => {
+const RegisterScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigation = useNavigation();
+  const theme = useTheme();
 
   const handleRegister = async () => {
     if (!username.trim() || !password.trim() || !confirmPassword.trim()) {
-      Alert.alert('Error', 'All fields are required');
+      setError('All fields are required');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      setError('Passwords do not match');
       return;
     }
 
+    setIsLoading(true);
+    setError('');
+
     try {
-      console.log('Attempting to register with username:', username);
       const success = await register(username, password);
-      console.log('Registration result:', success);
       if (success) {
         Alert.alert(
           'Success',
@@ -29,64 +36,119 @@ const RegisterScreen = ({ navigation }) => {
           [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
         );
       } else {
-        Alert.alert('Registration Failed', 'Please try again with a different username.');
+        setError('Registration failed. Please try again with a different username.');
       }
     } catch (error) {
       console.error('Registration error:', error);
-      Alert.alert('Registration Error', 'An unexpected error occurred. Please try again.');
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      padding: 20,
+      backgroundColor: theme.colors.background,
+    },
+    title: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+      textAlign: 'center',
+      marginBottom: 40,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 15,
+      fontSize: 16,
+      backgroundColor: theme.colors.card,
+      color: theme.colors.text,
+    },
+    button: {
+      backgroundColor: theme.colors.primary,
+      padding: 15,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    buttonText: {
+      color: '#fff',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    errorText: {
+      color: theme.colors.notification,
+      textAlign: 'center',
+      marginBottom: 15,
+    },
+    loginLink: {
+      marginTop: 20,
+      alignItems: 'center',
+    },
+    loginText: {
+      color: theme.colors.primary,
+      fontSize: 16,
+    },
+  });
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
-      <Button title="Register" onPress={handleRegister} />
-      <Button title="Back to Login" onPress={() => navigation.navigate('Login')} />
-    </View>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <Text style={styles.title}>Create Account</Text>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+        <Ionicons name="person-outline" size={24} color={theme.colors.text} style={{ marginRight: 10 }} />
+        <TextInput
+          style={[styles.input, { flex: 1 }]}
+          placeholder="Username"
+          placeholderTextColor={theme.colors.text + '80'}
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+        />
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+        <Ionicons name="lock-closed-outline" size={24} color={theme.colors.text} style={{ marginRight: 10 }} />
+        <TextInput
+          style={[styles.input, { flex: 1 }]}
+          placeholder="Password"
+          placeholderTextColor={theme.colors.text + '80'}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+        <Ionicons name="lock-closed-outline" size={24} color={theme.colors.text} style={{ marginRight: 10 }} />
+        <TextInput
+          style={[styles.input, { flex: 1 }]}
+          placeholder="Confirm Password"
+          placeholderTextColor={theme.colors.text + '80'}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
+      </View>
+      <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={isLoading}>
+        {isLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Register</Text>
+        )}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.loginLink} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.loginText}>Already have an account? Login</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-  },
-});
 
 export default RegisterScreen;
