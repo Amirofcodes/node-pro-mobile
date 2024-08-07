@@ -1,174 +1,201 @@
-# Documentation du Projet NODE-PRO
+# NODE-PRO Mobile
 
-## Aperçu du Projet
+NODE-PRO Mobile est une application full-stack pour la gestion d'articles et d'inventaire, proposant des interfaces web et mobile. Le projet est construit avec une architecture de microservices, utilisant Node.js pour le backend, et implémente des mises à jour en temps réel via WebSockets.
 
-NODE-PRO est une application complète pour la gestion d'articles et d'inventaire. Elle se compose d'un backend Node.js et de deux applications frontend : une interface web construite en JavaScript vanilla, et une application mobile développée avec React Native. Le projet utilise une architecture de microservices et implémente des mises à jour en temps réel via WebSockets pour une synchronisation fluide entre les plateformes.
+## Fonctionnalités
 
-## État Actuel du Projet
+- Authentification des utilisateurs (inscription, connexion, déconnexion)
+- Gestion des articles (création, lecture, mise à jour, suppression)
+- Mises à jour en temps réel via WebSockets
+- Téléchargement et gestion des images
+- Interface web responsive
+- Interface mobile conviviale
+- Support du mode sombre (mobile)
+- Fonctionnalité de recherche
 
-### Développement Backend
+## Stack Technologique
 
-1. **Configuration du Serveur** :
+### Backend
 
-   - Mise en place du serveur Express.js avec une configuration appropriée des middleware.
-   - Intégration de WebSocket pour les mises à jour en temps réel.
-   - Implémentation de la gestion CORS pour les requêtes cross-origin.
+- Node.js
+- Express.js
+- MongoDB avec Mongoose
+- WebSocket (bibliothèque ws)
+- JWT pour l'authentification
+- Multer pour le téléchargement de fichiers
+- Sharp pour le traitement d'images
 
-2. **Connexion à la Base de Données** :
+### Frontend Web
 
-   - Configuration de la connexion MongoDB avec gestion des erreurs et journalisation.
-   - Mise en place du pooling de connexions pour améliorer les performances.
+- HTML5
+- CSS3
+- JavaScript Vanilla
+- API Fetch pour les requêtes HTTP
 
-3. **Authentification** :
+### Frontend Mobile
 
-   - Implémentation de l'authentification basée sur JWT.
-   - Création de routes pour l'inscription et la connexion des utilisateurs.
-   - Développement de middleware pour la protection des routes.
+- React Native avec Expo
+- React Navigation
+- Axios pour les appels API
+- Expo SecureStore pour le stockage des tokens
+- Expo ImagePicker pour la sélection d'images
 
-4. **Gestion des Articles** :
+## Installation
 
-   - Implémentation des opérations CRUD pour les articles.
-   - Ajout d'une fonctionnalité de recherche pour les articles.
-   - Intégration du téléchargement et du traitement d'images pour les articles.
+### Prérequis
 
-5. **Mises à Jour en Temps Réel** :
+- Node.js (v14 ou ultérieur)
+- npm ou yarn
+- MongoDB
+- Expo CLI (pour le développement mobile)
 
-   - Implémentation d'un serveur WebSocket pour la communication en temps réel.
-   - Configuration de la diffusion pour les mises à jour, créations et suppressions d'articles.
+### Configuration du Backend
 
-6. **Gestion des Erreurs et Journalisation** :
-   - Implémentation d'une gestion complète des erreurs dans tout le backend.
-   - Ajout de journalisation pour les opérations importantes et les erreurs.
+1. Clonez le dépôt :
 
-### Développement Frontend Web
+   ```
+   git clone https://github.com/votre-nom-utilisateur/node-pro-mobile.git
+   cd node-pro-mobile
+   ```
 
-1. **Structure du Projet** :
+2. Installez les dépendances du backend :
 
-   - Organisation du code frontend en fichiers JavaScript modulaires.
-   - Implémentation d'une séparation appropriée des préoccupations (auth, articles, UI).
+   ```
+   cd backend
+   npm install
+   ```
 
-2. **Authentification** :
+3. Créez un fichier `.env` dans le répertoire `backend` avec le contenu suivant :
 
-   - Développement de la fonctionnalité de connexion.
-   - Implémentation de la fonctionnalité d'inscription des utilisateurs.
-   - Création de formulaires séparés pour la connexion et l'inscription.
-   - Mise en place de l'authentification basée sur les tokens avec stockage local.
+   ```
+   PORT=3000
+   MONGO_URI=mongodb://localhost:27017/nodepro
+   JWT_SECRET=votre_secret_jwt
+   ```
 
-3. **Gestion des Articles** :
+4. Démarrez le serveur backend :
+   ```
+   npm start
+   ```
 
-   - Création d'interfaces pour visualiser, créer, modifier et supprimer des articles.
-   - Implémentation du téléchargement et de l'affichage d'images pour les articles.
+### Configuration du Frontend Web
 
-4. **Fonctionnalité de Recherche** :
+1. Naviguez vers le répertoire du frontend web :
 
-   - Développement d'une interface de recherche pour trouver des articles par code.
+   ```
+   cd ../frontend/web
+   ```
 
-5. **Mises à Jour en Temps Réel** :
+2. Installez les dépendances :
 
-   - Intégration d'un client WebSocket pour recevoir des mises à jour en temps réel.
+   ```
+   npm install
+   ```
 
-6. **UI/UX** :
-   - Implémentation d'un design responsif utilisant CSS.
-   - Création d'une navigation intuitive entre les différentes sections de l'application.
+3. Mettez à jour le fichier `public/js/config.js` avec l'URL de votre serveur backend si nécessaire.
 
-### Développement Frontend Mobile
+4. Démarrez le serveur web :
 
-1. **Structure du Projet** :
+   ```
+   npm start
+   ```
 
-   - Organisation du code frontend en composants modulaires React Native.
-   - Implémentation d'une séparation appropriée des préoccupations (auth, articles, UI).
+5. Ouvrez votre navigateur et visitez `http://localhost:8080` (ou le port spécifié par votre serveur web).
 
-2. **Authentification** :
+### Configuration du Frontend Mobile
 
-   - Développement d'écrans de connexion et d'inscription avec une interface utilisateur améliorée.
-   - Implémentation de la validation des formulaires et de la gestion des erreurs.
-   - Mise en place de l'authentification basée sur les tokens avec stockage sécurisé (Expo SecureStore).
+1. Naviguez vers le répertoire du frontend mobile :
 
-3. **Gestion des Articles** :
+   ```
+   cd ../mobile/mobile-pro
+   ```
 
-   - Création d'interfaces pour visualiser, créer, modifier et supprimer des articles.
-   - Implémentation du téléchargement et de l'affichage d'images pour les articles.
-   - Amélioration de la mise en page et du style des écrans de détail et de création d'articles.
+2. Installez les dépendances :
 
-4. **Fonctionnalité de Recherche** :
+   ```
+   npm install
+   ```
 
-   - Développement d'une interface de recherche avancée avec filtrage local et recherche via API.
-   - Implémentation de la recherche débounce pour optimiser les appels API.
+3. Mettez à jour le fichier `src/config/config.js` avec l'adresse IP de votre serveur backend.
 
-5. **Mises à Jour en Temps Réel** :
+4. Démarrez le serveur de développement Expo :
 
-   - Intégration d'un client WebSocket pour recevoir des mises à jour en temps réel.
+   ```
+   npx expo start
+   ```
 
-6. **UI/UX** :
+5. Utilisez l'application Expo Go sur votre appareil mobile pour scanner le code QR et exécuter l'application.
 
-   - Implémentation d'un système de thème pour la prise en charge des modes clair et sombre.
-   - Création d'une navigation intuitive utilisant React Navigation.
-   - Amélioration de la convivialité avec des icônes et une mise en page plus attrayante.
+## Utilisation
 
-7. **Gestion des Erreurs** :
+### Application Web
 
-   - Amélioration de la gestion des erreurs et des mécanismes de feedback utilisateur.
-   - Ajout d'états de chargement pour une meilleure expérience utilisateur.
+1. Ouvrez l'application web dans votre navigateur.
+2. Inscrivez-vous pour un nouveau compte ou connectez-vous avec des identifiants existants.
+3. Utilisez les boutons de navigation pour visualiser, créer, éditer ou supprimer des articles.
+4. Profitez des mises à jour en temps réel sur tous les clients connectés.
 
-8. **Écran d'Accueil** :
+### Application Mobile
 
-   - Création d'un écran d'accueil avec un design en grille pour un accès rapide aux fonctionnalités principales.
+1. Ouvrez l'application mobile en utilisant Expo Go.
+2. Inscrivez-vous pour un nouveau compte ou connectez-vous avec des identifiants existants.
+3. Naviguez dans l'application en utilisant la barre de navigation inférieure.
+4. Visualisez, créez, éditez ou supprimez des articles selon vos besoins.
+5. Utilisez la fonctionnalité de recherche pour trouver des articles spécifiques.
+6. Basculez entre les modes clair et sombre dans la section profil.
 
-9. **Profil Utilisateur** :
-   - Implémentation d'un écran de profil utilisateur avec fonctionnalité de déconnexion.
+## Structure du Projet
 
-## Stack Technique
+```
+node-pro-mobile/
+├── backend/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   ├── services/
+│   └── server.js
+├── frontend/
+│   ├── web/
+│   │   ├── public/
+│   │   │   ├── js/
+│   │   │   ├── index.html
+│   │   │   └── style.css
+│   │   └── package.json
+│   └── mobile/
+│       └── mobile-pro/
+│           ├── src/
+│           │   ├── components/
+│           │   ├── screens/
+│           │   ├── services/
+│           │   ├── navigation/
+│           │   └── config/
+│           ├── App.js
+│           └── app.json
+└── README.md
+```
 
-- **Backend** : Node.js, Express.js, MongoDB, Mongoose, WebSocket
-- **Frontend Web** : HTML5, CSS3, JavaScript Vanilla, API Fetch
-- **Frontend Mobile** : React Native avec Expo, React Navigation, Axios
-- **Authentification** : JSON Web Tokens (JWT)
-- **Téléchargement de Fichiers** : Multer, Sharp pour le traitement d'images
-- **Communication en Temps Réel** : WebSocket (bibliothèque ws)
-- **Gestion d'État** : État local (Web), React Hooks (Mobile)
-- **Navigation** : Routage personnalisé (Web), React Navigation (Mobile)
-- **UI** : Ionicons pour les icônes (Mobile)
+## Principaux Modèles de Conception et Algorithmes
 
-## Points de Terminaison API
+1. **Architecture MVC** : Le projet suit un modèle Modèle-Vue-Contrôleur, en particulier dans la structure du backend.
 
-### Authentification
+2. **Modèle Observateur** : Implémenté via WebSockets pour les mises à jour en temps réel.
 
-- POST `/api/auth/register` : Inscription d'un nouvel utilisateur
-- POST `/api/auth/login` : Connexion de l'utilisateur
+3. **Modèle Singleton** : Utilisé dans la connexion à la base de données et l'initialisation du serveur WebSocket.
 
-### Articles
+4. **Modèle Factory** : Employé dans la création d'instances de services API.
 
-- GET `/api/articles` : Récupération de tous les articles
-- GET `/api/articles/:id` : Récupération d'un article spécifique
-- POST `/api/articles` : Création d'un nouvel article
-- PUT `/api/articles/:id` : Mise à jour d'un article existant
-- DELETE `/api/articles/:id` : Suppression d'un article
-- GET `/api/articles/:id/image` : Récupération de l'image d'un article
-- GET `/api/articles/search/:codeArticle` : Recherche d'un article par code
+5. **Authentification JWT** : Assure une authentification et une autorisation sécurisées des utilisateurs.
 
-## Événements WebSocket
+6. **Conception API RESTful** : Le backend fournit une API RESTful pour les opérations CRUD sur les articles.
 
-- `newArticle` : Diffusion lors de la création d'un nouvel article
-- `updateArticle` : Diffusion lors de la mise à jour d'un article
-- `deleteArticle` : Diffusion lors de la suppression d'un article
+7. **Algorithme de Debounce** : Implémenté dans la fonctionnalité de recherche pour optimiser les performances.
 
-## Mises à Jour Récentes
+8. **Chargement Paresseux** : Utilisé dans l'application mobile pour un chargement et un rendu efficaces des images.
 
-1. Amélioration significative de l'interface utilisateur de l'application mobile.
-2. Implémentation d'un système de thème pour les modes clair et sombre dans l'app mobile.
-3. Amélioration de la fonctionnalité de recherche avec filtrage local et recherche API.
-4. Optimisation des performances de l'application mobile.
-5. Amélioration de la gestion des erreurs et ajout d'états de chargement.
-6. Refonte de l'écran d'accueil mobile pour un accès plus rapide aux fonctionnalités.
-7. Mise à jour des écrans d'authentification avec une meilleure validation et gestion des erreurs.
+## Contribution
 
-## Prochaines Étapes
+Veuillez lire [CONTRIBUTING.md](CONTRIBUTING.md) pour plus de détails sur notre code de conduite et le processus de soumission des pull requests.
 
-1. Implémentation du support hors ligne pour l'application mobile.
-2. Ajout de tests unitaires et d'intégration pour le backend, le frontend web et le frontend mobile.
-3. Implémentation d'une couche de mise en cache pour améliorer les performances sur toutes les plateformes.
-4. Renforcement des mesures de sécurité, y compris la limitation de débit et la validation des entrées.
-5. Développement d'un pipeline CI/CD pour l'automatisation des tests et du déploiement de tous les composants.
-6. Amélioration des mécanismes de synchronisation des données entre les plateformes.
-7. Résolution du problème de gestion des erreurs 404 dans la fonctionnalité de recherche API.
-8. Expansion des fonctionnalités de l'écran de profil utilisateur, y compris la modification des informations du profil.
+## Licence
+
+Ce projet est sous licence MIT - voir le fichier [LICENSE.md](LICENSE.md) pour plus de détails.
