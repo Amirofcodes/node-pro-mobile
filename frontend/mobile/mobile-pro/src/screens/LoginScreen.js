@@ -17,7 +17,10 @@ const LoginScreen = ({ navigation }) => {
       const success = await login(username, password);
       console.log('Login result:', success);
       if (success) {
-        navigation.replace('Home');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        });
       } else {
         Alert.alert('Login Failed', 'Please check your credentials and try again.');
       }

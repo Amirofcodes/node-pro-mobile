@@ -1,41 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import AppNavigator from './navigation/AppNavigator';
-import { connectWebSocket, disconnectWebSocket, isConnected } from './services/websocket';
-import { getToken, isAuthenticated } from './services/authManager';
+import RootNavigator from './src/navigation/AppNavigator';
+import { connectWebSocket, disconnectWebSocket } from './src/services/websocket';
+import { getToken, isAuthenticated } from './src/services/authManager';
+import NetInfo from "@react-native-community/netinfo";
+import { useDarkMode } from './src/hooks/useDarkMode';
 
 export default function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [error, setError] = useState(null);
+  const { isDarkMode, theme } = useDarkMode();
 
   useEffect(() => {
     checkAuthStatus();
-  }, []);
 
-  useEffect(() => {
-    let wsConnectionInterval;
-    if (isAuth && !isConnected()) {
-      wsConnectionInterval = setInterval(async () => {
-        try {
-          const token = await getToken();
-          if (token) {
-            connectWebSocket(token);
-          }
-          if (isConnected()) {
-            clearInterval(wsConnectionInterval);
-          }
-        } catch (err) {
-          console.error('Error in WebSocket connection:', err);
-          setError(err.toString());
-        }
-      }, 5000);
-    }
-    return () => {
-      if (wsConnectionInterval) {
-        clearInterval(wsConnectionInterval);
+    const unsubscribe = NetInfo.addEventListener(state => {
+      if (state.isConnected && isAuth) {
+        attemptWebSocketConnection();
       }
+    });
+
+    return () => {
+      unsubscribe();
+      disconnectWebSocket();
     };
   }, [isAuth]);
 
@@ -44,10 +34,7 @@ export default function App() {
       const authStatus = await isAuthenticated();
       setIsAuth(authStatus);
       if (authStatus) {
-        const token = await getToken();
-        if (token) {
-          connectWebSocket(token);
-        }
+        attemptWebSocketConnection();
       }
     } catch (error) {
       console.error('Error checking auth status:', error);
@@ -55,17 +42,24 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
-    setIsAuth(false);
-    disconnectWebSocket();
+  const attemptWebSocketConnection = async () => {
+    try {
+      const token = await getToken();
+      if (token) {
+        connectWebSocket(token);
+      }
+    } catch (err) {
+      console.error('Error in WebSocket connection:', err);
+      setError(err.toString());
+    }
   };
 
   if (error) {
     return (
       <SafeAreaProvider>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>An error occurred:</Text>
-          <Text>{error}</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background }}>
+          <Text style={{ color: theme.colors.text }}>An error occurred:</Text>
+          <Text style={{ color: theme.colors.text }}>{error}</Text>
         </View>
       </SafeAreaProvider>
     );
@@ -73,12 +67,10 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="auto" />
-      <AppNavigator
-        isAuthenticated={isAuth}
-        setIsAuthenticated={setIsAuth}
-        onLogout={handleLogout}
-      />
+      <NavigationContainer theme={theme}>
+        <StatusBar style={isDarkMode ? 'light' : 'dark'} />
+        <RootNavigator />
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }

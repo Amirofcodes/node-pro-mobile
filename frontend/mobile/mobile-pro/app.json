@@ -28,35 +28,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "The app accesses your photos to let you upload images for articles."
-        }
-      ],
-      "expo-secure-store"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "your-project-id-here"
-      }
-    },
-    "hooks": {
-      "postPublish": [
-        {
-          "file": "sentry-expo/upload-sourcemaps",
-          "config": {
-            "organization": "your-sentry-org",
-            "project": "your-sentry-project",
-            "authToken": "your-sentry-auth-token"
-          }
-        }
-      ]
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "description": ""
+    "entryPoint": "./index.js"
   }
 }

@@ -7,14 +7,21 @@ const DEV_API_BASE_URL = Platform.select({
 });
 
 // If you're testing on a physical device, replace 'localhost' with your computer's local IP address
-const LOCAL_MACHINE_IP = '10.21.6.10'; // Replace X with your actual IP
+const LOCAL_MACHINE_IP = '10.21.6.10'; // Replace with your actual IP
 const PHYSICAL_DEVICE_API_BASE_URL = `http://${LOCAL_MACHINE_IP}:3000/api`;
 
-export default {
+const config = {
   API_BASE_URL: __DEV__ 
     ? (Platform.OS === 'web' 
         ? DEV_API_BASE_URL 
         : PHYSICAL_DEVICE_API_BASE_URL)
     : PROD_API_BASE_URL,
+  WS_URL: __DEV__
+    ? (Platform.OS === 'web'
+        ? 'ws://localhost:3000'
+        : `ws://${LOCAL_MACHINE_IP}:3000`)
+    : 'wss://your-production-ws-url.com',
   DEBUG_MODE: __DEV__,
 };
+
+export default config;

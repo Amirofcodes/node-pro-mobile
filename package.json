@@ -11,6 +11,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@react-native-community/netinfo": "^11.3.2",
         "ai-digest": "^1.0.4"
     }
 }
