@@ -6,6 +6,8 @@ const CHATGPT_API_URL = "https://api.openai.com/v1/chat/completions";
 
 export const processChatGPTResponse = async (imageUri) => {
   try {
+    console.log('API Key being used:', config.OPENAI_API_KEY);
+    
     // Convert the image to base64
     const base64Image = await getBase64FromUri(imageUri);
 
@@ -50,14 +52,11 @@ export const processChatGPTResponse = async (imageUri) => {
     let chatGPTResponse;
     const content = response.data.choices[0].message.content;
 
-    // Remove code blocks and attempt to parse JSON
-    const jsonContent = content.replace(/```json\n|\n```/g, '').trim();
-    
     try {
-      chatGPTResponse = JSON.parse(jsonContent);
+      chatGPTResponse = JSON.parse(content);
     } catch (parseError) {
       console.log("Failed to parse JSON, using raw text response");
-      chatGPTResponse = extractInfoFromText(jsonContent);
+      chatGPTResponse = extractInfoFromText(content);
     }
 
     console.log("Processed ChatGPT response:", chatGPTResponse);
