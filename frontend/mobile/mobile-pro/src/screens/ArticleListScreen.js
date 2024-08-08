@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  TouchableOpacity, 
-  StyleSheet, 
-  TextInput, 
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
   Image,
   ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -47,9 +47,10 @@ const ArticleListScreen = () => {
     if (query.trim() === '') {
       setFilteredArticles(articles);
     } else {
-      const filtered = articles.filter(article =>
-        article.nom.toLowerCase().includes(query.toLowerCase()) ||
-        article.codeArticle.toLowerCase().includes(query.toLowerCase())
+      const filtered = articles.filter(
+        (article) =>
+          article.nom.toLowerCase().includes(query.toLowerCase()) ||
+          article.codeArticle.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredArticles(filtered);
     }
@@ -58,7 +59,9 @@ const ArticleListScreen = () => {
   const renderArticleItem = ({ item }) => (
     <TouchableOpacity
       style={styles.articleItem}
-      onPress={() => navigation.navigate('ArticleDetail', { articleId: item._id })}
+      onPress={() =>
+        navigation.navigate('ArticleDetail', { articleId: item._id })
+      }
     >
       {item.image ? (
         <Image
@@ -71,18 +74,29 @@ const ArticleListScreen = () => {
         </View>
       )}
       <View style={styles.articleInfo}>
-        <Text style={[styles.articleTitle, { color: theme.colors.text }]}>{item.nom}</Text>
-        <Text style={[styles.articleCode, { color: theme.colors.text }]}>Code: {item.codeArticle}</Text>
-        <Text style={[styles.articlePrice, { color: theme.colors.primary }]}>Price: {item.prix}€</Text>
+        <Text style={[styles.articleTitle, { color: theme.colors.text }]}>
+          {item.nom}
+        </Text>
+        <Text style={[styles.articleCode, { color: theme.colors.text }]}>
+          Code: {item.codeArticle}
+        </Text>
+        <Text style={[styles.articlePrice, { color: theme.colors.primary }]}>
+          Price: {item.prix}€
+        </Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <View style={styles.searchContainer}>
         <TextInput
-          style={[styles.searchInput, { color: theme.colors.text, borderColor: theme.colors.border }]}
+          style={[
+            styles.searchInput,
+            { color: theme.colors.text, borderColor: theme.colors.border },
+          ]}
           placeholder="Search by name or code..."
           placeholderTextColor={theme.colors.text + '80'}
           value={searchQuery}
@@ -95,8 +109,14 @@ const ArticleListScreen = () => {
       >
         <Text style={styles.createButtonText}>Create New Article</Text>
       </TouchableOpacity>
-      {isLoading && <ActivityIndicator size="large" color={theme.colors.primary} />}
-      {error && <Text style={[styles.errorText, { color: theme.colors.error }]}>{error}</Text>}
+      {isLoading && (
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      )}
+      {error && (
+        <Text style={[styles.errorText, { color: theme.colors.error }]}>
+          {error}
+        </Text>
+      )}
       <FlatList
         data={filteredArticles}
         renderItem={renderArticleItem}

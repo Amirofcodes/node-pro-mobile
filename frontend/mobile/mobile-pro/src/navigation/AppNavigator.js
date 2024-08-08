@@ -31,10 +31,26 @@ const ArticleStack = () => {
         },
       }}
     >
-      <Stack.Screen name="ArticleList" component={ArticleListScreen} options={{ title: 'Articles' }} />
-      <Stack.Screen name="ArticleDetail" component={ArticleDetailScreen} options={{ title: 'Article Details' }} />
-      <Stack.Screen name="CreateArticle" component={CreateArticleScreen} options={{ title: 'Create Article' }} />
-      <Stack.Screen name="EditArticle" component={EditArticleScreen} options={{ title: 'Edit Article' }} />
+      <Stack.Screen
+        name="ArticleList"
+        component={ArticleListScreen}
+        options={{ title: 'Articles' }}
+      />
+      <Stack.Screen
+        name="ArticleDetail"
+        component={ArticleDetailScreen}
+        options={{ title: 'Article Details' }}
+      />
+      <Stack.Screen
+        name="CreateArticle"
+        component={CreateArticleScreen}
+        options={{ title: 'Create Article' }}
+      />
+      <Stack.Screen
+        name="EditArticle"
+        component={EditArticleScreen}
+        options={{ title: 'Edit Article' }}
+      />
     </Stack.Navigator>
   );
 };
@@ -71,7 +87,11 @@ const MainTab = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Articles" component={ArticleStack} options={{ headerShown: false }} />
+      <Tab.Screen
+        name="Articles"
+        component={ArticleStack}
+        options={{ headerShown: false }}
+      />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

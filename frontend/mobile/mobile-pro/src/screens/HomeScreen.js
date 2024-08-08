@@ -8,8 +8,8 @@ const HomeScreen = () => {
   const theme = useTheme();
 
   const menuItems = [
-    { title: 'View Articles', icon: 'list', screen: 'Articles', color: '#4CAF50' },
-    { title: 'Create New Article', icon: 'add-circle', screen: 'CreateArticle', color: '#2196F3' },
+    { title: 'View Articles', icon: 'list', screen: 'Articles', params: { screen: 'ArticleList' }, color: '#4CAF50' },
+    { title: 'Create New Article', icon: 'add-circle', screen: 'Articles', params: { screen: 'CreateArticle' }, color: '#2196F3' },
     { title: 'My Profile', icon: 'person', screen: 'Profile', color: '#9C27B0' },
   ];
 
@@ -17,7 +17,7 @@ const HomeScreen = () => {
     <TouchableOpacity
       key={item.title}
       style={[styles.menuItem, { backgroundColor: item.color }]}
-      onPress={() => navigation.navigate(item.screen)}
+      onPress={() => navigation.navigate(item.screen, item.params)}
     >
       <Ionicons name={item.icon} size={32} color="#fff" />
       <Text style={styles.menuItemText}>{item.title}</Text>

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import RootNavigator from './src/navigation/AppNavigator';
 import { connectWebSocket, disconnectWebSocket } from './src/services/websocket';
 import { getToken, isAuthenticated } from './src/services/authManager';
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo from '@react-native-community/netinfo';
 import { useDarkMode } from './src/hooks/useDarkMode';
 
 export default function App() {
@@ -17,7 +16,7 @@ export default function App() {
   useEffect(() => {
     checkAuthStatus();
 
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       if (state.isConnected && isAuth) {
         attemptWebSocketConnection();
       }
