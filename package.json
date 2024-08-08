@@ -13,6 +13,7 @@
     "dependencies": {
         "@expo/vector-icons": "^14.0.2",
         "@react-native-community/netinfo": "^11.3.2",
-        "ai-digest": "^1.0.4"
+        "ai-digest": "^1.0.4",
+        "dotenv": "^16.4.5"
     }
 }

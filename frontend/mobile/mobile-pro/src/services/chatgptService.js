@@ -1,8 +1,8 @@
-import axios from 'axios';
-import config from '../config/config';
-import * as FileSystem from 'expo-file-system';
+import axios from "axios";
+import config from "../config/config";
+import * as FileSystem from "expo-file-system";
 
-const CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions';
+const CHATGPT_API_URL = "https://api.openai.com/v1/chat/completions";
 
 export const processChatGPTResponse = async (imageUri) => {
   try {
@@ -21,37 +21,94 @@ export const processChatGPTResponse = async (imageUri) => {
     const response = await axios.post(
       CHATGPT_API_URL,
       {
-        model: 'gpt-4-vision-preview',
+        model: "gpt-4o-mini",
         messages: [
           {
-            role: 'user',
+            role: "user",
             content: [
-              { type: 'text', text: prompt },
-              { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64Image}` } },
+              { type: "text", text: prompt },
+              {
+                type: "image_url",
+                image_url: { url: `data:image/jpeg;base64,${base64Image}` },
+              },
             ],
           },
         ],
+        max_tokens: 300,
       },
       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${config.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${config.OPENAI_API_KEY}`,
         },
       }
     );
 
-    const chatGPTResponse = JSON.parse(response.data.choices[0].message.content);
+    console.log("Full ChatGPT response:", JSON.stringify(response.data, null, 2));
+    console.log("ChatGPT content:", response.data.choices[0].message.content);
+
+    let chatGPTResponse;
+    const content = response.data.choices[0].message.content;
+
+    // Remove code blocks and attempt to parse JSON
+    const jsonContent = content.replace(/```json\n|\n```/g, '').trim();
     
-    // Ensure the code starts with GPT- and has 6 alphanumeric characters
-    if (!chatGPTResponse.code || !chatGPTResponse.code.startsWith('GPT-') || chatGPTResponse.code.length !== 10) {
-      chatGPTResponse.code = 'GPT-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    try {
+      chatGPTResponse = JSON.parse(jsonContent);
+    } catch (parseError) {
+      console.log("Failed to parse JSON, using raw text response");
+      chatGPTResponse = extractInfoFromText(jsonContent);
     }
-    
+
+    console.log("Processed ChatGPT response:", chatGPTResponse);
+
+    // Ensure the code starts with GPT- and has 6 alphanumeric characters
+    if (
+      !chatGPTResponse.code ||
+      !chatGPTResponse.code.startsWith("GPT-") ||
+      chatGPTResponse.code.length !== 10
+    ) {
+      chatGPTResponse.code =
+        "GPT-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
     return chatGPTResponse;
   } catch (error) {
-    console.error('Error processing ChatGPT response:', error);
+    console.error("Error processing ChatGPT response:", error);
+    if (error.response) {
+      console.error("Error data:", error.response.data);
+      console.error("Error status:", error.response.status);
+      console.error("Error headers:", error.response.headers);
+    }
     throw error;
   }
+};
+
+const extractInfoFromText = (text) => {
+  const result = {
+    name: '',
+    description: '',
+    price: 0,
+    quantity: 0,
+    code: ''
+  };
+
+  const lines = text.split('\n');
+  lines.forEach(line => {
+    if (line.toLowerCase().includes('"name":')) {
+      result.name = line.split(':')[1].trim().replace(/[",]/g, '');
+    } else if (line.toLowerCase().includes('"description":')) {
+      result.description = line.split(':')[1].trim().replace(/[",]/g, '');
+    } else if (line.toLowerCase().includes('"price":')) {
+      result.price = parseInt(line.split(':')[1].trim()) || 0;
+    } else if (line.toLowerCase().includes('"quantity":')) {
+      result.quantity = parseInt(line.split(':')[1].trim()) || 0;
+    } else if (line.toLowerCase().includes('"code":')) {
+      result.code = line.split(':')[1].trim().replace(/[",]/g, '');
+    }
+  });
+
+  return result;
 };
 
 const getBase64FromUri = async (uri) => {
@@ -61,7 +118,7 @@ const getBase64FromUri = async (uri) => {
     });
     return content;
   } catch (error) {
-    console.error('Error converting image to base64:', error);
+    console.error("Error converting image to base64:", error);
     throw error;
   }
 };

@@ -16,7 +16,6 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
-import { processChatGPTResponse } from '../services/chatgptService';
 
 const CreateArticleScreen = () => {
   const [nom, setNom] = useState('');
@@ -50,7 +49,6 @@ const CreateArticleScreen = () => {
 
       if (!result.canceled) {
         setImage(result.assets[0].uri);
-        processImageWithChatGPT(result.assets[0].uri);
       }
     } else {
       Alert.alert('Permission Required', 'Camera permission is required to take pictures.');
@@ -67,26 +65,6 @@ const CreateArticleScreen = () => {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      processImageWithChatGPT(result.assets[0].uri);
-    }
-  };
-
-  const processImageWithChatGPT = async (imageUri) => {
-    setIsLoading(true);
-    try {
-      const response = await processChatGPTResponse(imageUri);
-      if (response) {
-        setNom(response.name);
-        setCodeArticle(response.code);
-        setDescription(response.description);
-        setPrix(response.price.toString());
-        setQuantite(response.quantity.toString());
-      }
-    } catch (error) {
-      console.error('Error processing image with ChatGPT:', error);
-      Alert.alert('Error', 'Failed to process image with ChatGPT');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -135,20 +113,18 @@ const CreateArticleScreen = () => {
       <ScrollView>
         <Text style={[styles.title, { color: theme.colors.text }]}>Create New Article</Text>
 
-        {image ? (
-          <Image source={{ uri: image }} style={styles.imagePreview} />
-        ) : (
-          <View style={styles.imageButtonsContainer}>
-            <TouchableOpacity style={styles.imageButton} onPress={takePicture}>
-              <Ionicons name="camera" size={24} color={theme.colors.primary} />
-              <Text style={styles.imageButtonText}>Take Photo</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
-              <Ionicons name="image" size={24} color={theme.colors.primary} />
-              <Text style={styles.imageButtonText}>Choose from Gallery</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        <View style={styles.imageButtonsContainer}>
+          <TouchableOpacity style={styles.imageButton} onPress={takePicture}>
+            <Ionicons name="camera" size={24} color={theme.colors.primary} />
+            <Text style={[styles.imageButtonText, { color: theme.colors.primary }]}>Take Photo</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+            <Ionicons name="image" size={24} color={theme.colors.primary} />
+            <Text style={[styles.imageButtonText, { color: theme.colors.primary }]}>Choose from Gallery</Text>
+          </TouchableOpacity>
+        </View>
+
+        {image && <Image source={{ uri: image }} style={styles.imagePreview} />}
 
         <TextInput
           style={[styles.input, { color: theme.colors.text, borderColor: theme.colors.border }]}
@@ -163,7 +139,6 @@ const CreateArticleScreen = () => {
           placeholderTextColor={theme.colors.text + '80'}
           value={codeArticle}
           onChangeText={setCodeArticle}
-          editable={false}
         />
         <TextInput
           style={[styles.input, styles.textArea, { color: theme.colors.text, borderColor: theme.colors.border }]}
@@ -218,7 +193,7 @@ const styles = StyleSheet.create({
   },
   imageButtonsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
   imageButton: {
@@ -228,14 +203,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: '#007AFF',
+    flex: 0.48,
   },
   imageButtonText: {
     marginTop: 5,
-    color: '#007AFF',
   },
   imagePreview: {
     width: '100%',
-    aspectRatio: 1,
+    height: 200,
+    resizeMode: 'cover',
     marginBottom: 20,
     borderRadius: 5,
   },

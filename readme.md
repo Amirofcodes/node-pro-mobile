@@ -6,12 +6,18 @@ NODE-PRO Mobile est une application full-stack pour la gestion d'articles et d'i
 
 - Authentification des utilisateurs (inscription, connexion, déconnexion)
 - Gestion des articles (création, lecture, mise à jour, suppression)
+- Création d'articles assistée par IA
 - Mises à jour en temps réel via WebSockets
 - Téléchargement et gestion des images
 - Interface web responsive
 - Interface mobile conviviale
 - Support du mode sombre (mobile)
 - Fonctionnalité de recherche
+
+## Nouvelles Fonctionnalités
+
+- **Création d'Articles Assistée par IA** : Utilisez l'appareil photo ou la galerie pour prendre une photo d'un article. L'IA analysera l'image et générera automatiquement les détails de l'article.
+- **Amélioration de la Création Manuelle d'Articles** : Interface utilisateur améliorée pour la création manuelle d'articles, avec une meilleure gestion des images et des champs de saisie.
 
 ## Stack Technologique
 
@@ -133,16 +139,21 @@ NODE-PRO Mobile est une application full-stack pour la gestion d'articles et d'i
 1. Ouvrez l'application web dans votre navigateur.
 2. Inscrivez-vous pour un nouveau compte ou connectez-vous avec des identifiants existants.
 3. Utilisez les boutons de navigation pour visualiser, créer, éditer ou supprimer des articles.
-4. Profitez des mises à jour en temps réel sur tous les clients connectés.
+4. Pour créer un nouvel article, vous pouvez soit utiliser la méthode manuelle, soit utiliser la fonction de création assistée par IA.
+5. Profitez des mises à jour en temps réel sur tous les clients connectés.
 
 ### Application Mobile
 
 1. Ouvrez l'application mobile en utilisant Expo Go.
 2. Inscrivez-vous pour un nouveau compte ou connectez-vous avec des identifiants existants.
 3. Naviguez dans l'application en utilisant la barre de navigation inférieure.
-4. Visualisez, créez, éditez ou supprimez des articles selon vos besoins.
-5. Utilisez la fonctionnalité de recherche pour trouver des articles spécifiques.
-6. Basculez entre les modes clair et sombre dans la section profil.
+4. Pour créer un nouvel article :
+   - Utilisez le bouton "Créer un Article" pour la création manuelle.
+   - Utilisez le bouton "AI Article Creation" pour la création assistée par IA.
+5. Lors de la création assistée par IA, prenez une photo ou choisissez une image de la galerie. L'IA générera automatiquement les détails de l'article.
+6. Visualisez, créez, éditez ou supprimez des articles selon vos besoins.
+7. Utilisez la fonctionnalité de recherche pour trouver des articles spécifiques.
+8. Basculez entre les modes clair et sombre dans la section profil.
 
 ## Structure du Projet
 

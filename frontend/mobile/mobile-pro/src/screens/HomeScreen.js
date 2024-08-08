@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -8,9 +14,32 @@ const HomeScreen = () => {
   const theme = useTheme();
 
   const menuItems = [
-    { title: 'View Articles', icon: 'list', screen: 'Articles', params: { screen: 'ArticleList' }, color: '#4CAF50' },
-    { title: 'Create New Article', icon: 'add-circle', screen: 'Articles', params: { screen: 'CreateArticle' }, color: '#2196F3' },
-    { title: 'My Profile', icon: 'person', screen: 'Profile', color: '#9C27B0' },
+    {
+      title: "View Articles",
+      icon: "list",
+      screen: "Articles",
+      params: { screen: "ArticleList" },
+      color: "#4CAF50",
+    },
+    {
+      title: "Create Article",
+      icon: "add-circle",
+      screen: "Articles",
+      params: { screen: "CreateArticle" },
+      color: "#2196F3",
+    },
+    {
+      title: "AI Article Creation",
+      icon: "camera",
+      screen: "AIArticleCreation",
+      color: "#FF9800",
+    },
+    {
+      title: "My Profile",
+      icon: "person",
+      screen: "Profile",
+      color: "#9C27B0",
+    },
   ];
 
   const renderMenuItem = (item) => (
@@ -25,15 +54,21 @@ const HomeScreen = () => {
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <View style={styles.header}>
-        <Text style={[styles.headerText, { color: theme.colors.text }]}>NODE-PRO Mobile</Text>
-        <Text style={[styles.subHeaderText, { color: theme.colors.text }]}>Manage your articles with ease</Text>
+        <Text style={[styles.headerText, { color: theme.colors.text }]}>
+          NODE-PRO Mobile
+        </Text>
+        <Text style={[styles.subHeaderText, { color: theme.colors.text }]}>
+          Manage your articles with ease
+        </Text>
       </View>
-      <View style={styles.menuGrid}>
-        {menuItems.map(renderMenuItem)}
-      </View>
-      <Text style={[styles.footerText, { color: theme.colors.text }]}>© 2024 NODE-PRO Mobile</Text>
+      <View style={styles.menuGrid}>{menuItems.map(renderMenuItem)}</View>
+      <Text style={[styles.footerText, { color: theme.colors.text }]}>
+        © 2024 NODE-PRO Mobile
+      </Text>
     </SafeAreaView>
   );
 };
