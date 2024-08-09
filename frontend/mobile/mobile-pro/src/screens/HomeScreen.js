@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-} from 'react-native';
-import { useNavigation, useTheme } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+} from "react-native";
+import { useNavigation, useTheme } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -35,10 +35,16 @@ const HomeScreen = () => {
       color: "#FF9800",
     },
     {
+      title: "Ollama Article Creation",
+      icon: "flask",
+      screen: "OllamaArticleCreation",
+      color: "#9C27B0",
+    },
+    {
       title: "My Profile",
       icon: "person",
       screen: "Profile",
-      color: "#9C27B0",
+      color: "#E91E63",
     },
   ];
 
@@ -79,12 +85,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 30,
   },
   headerText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   subHeaderText: {
     fontSize: 16,
@@ -92,28 +98,28 @@ const styles = StyleSheet.create({
   },
   menuGrid: {
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   menuItem: {
-    width: '48%',
+    width: "48%",
     aspectRatio: 1,
     borderRadius: 10,
     padding: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 15,
   },
   menuItemText: {
-    color: '#fff',
+    color: "#fff",
     marginTop: 10,
     fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   footerText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
   },
 });

@@ -25,6 +25,11 @@ const config = {
     : "wss://your-production-ws-url.com",
   DEBUG_MODE: __DEV__,
   OPENAI_API_KEY: env.OPENAI_API_KEY,
+  OLLAMA_BASE_URL: __DEV__
+    ? Platform.OS === 'android'
+      ? 'http://10.0.2.2:11434'
+      : `http://${LOCAL_MACHINE_IP}:11434`
+    : 'http://your-production-ollama-url.com',
 };
 
 export default config;

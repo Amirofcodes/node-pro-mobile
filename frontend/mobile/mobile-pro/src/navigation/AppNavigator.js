@@ -14,6 +14,7 @@ import EditArticleScreen from "../screens/EditArticleScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SearchScreen";
 import AIArticleCreationScreen from "../screens/AIArticleCreationScreen";
+import OllamaArticleCreationScreen from "../screens/OllamaArticleCreationScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -104,12 +105,20 @@ const RootNavigator = () => (
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
     <Stack.Screen name="Main" component={MainTab} />
-    <Stack.Screen 
-      name="AIArticleCreation" 
+    <Stack.Screen
+      name="AIArticleCreation"
       component={AIArticleCreationScreen}
       options={{
         headerShown: true,
-        title: "AI Article Creation"
+        title: "AI Article Creation",
+      }}
+    />
+    <Stack.Screen
+      name="OllamaArticleCreation"
+      component={OllamaArticleCreationScreen}
+      options={{
+        headerShown: true,
+        title: "Ollama Article Creation",
       }}
     />
   </Stack.Navigator>
