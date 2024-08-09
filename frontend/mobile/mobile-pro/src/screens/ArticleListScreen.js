@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../services/api';
 
 const ArticleListScreen = () => {
@@ -34,6 +35,8 @@ const ArticleListScreen = () => {
       const response = await api.get('/articles');
       setArticles(response.data);
       setFilteredArticles(response.data);
+      // Store articles in AsyncStorage
+      await AsyncStorage.setItem('articles', JSON.stringify(response.data));
     } catch (error) {
       console.error('Error fetching articles:', error);
       setError('Failed to fetch articles. Please try again.');

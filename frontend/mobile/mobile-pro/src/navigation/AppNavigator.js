@@ -15,6 +15,9 @@ import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SearchScreen";
 import AIArticleCreationScreen from "../screens/AIArticleCreationScreen";
 import OllamaArticleCreationScreen from "../screens/OllamaArticleCreationScreen";
+import PriceGuessingGameScreen from "../screens/PriceGuessingGameScreen";
+
+console.log("ArticleListScreen:", ArticleListScreen);
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -119,6 +122,14 @@ const RootNavigator = () => (
       options={{
         headerShown: true,
         title: "Ollama Article Creation",
+      }}
+    />
+    <Stack.Screen
+      name="PriceGuessingGame"
+      component={PriceGuessingGameScreen}
+      options={{
+        headerShown: true,
+        title: "Price Guessing Game",
       }}
     />
   </Stack.Navigator>

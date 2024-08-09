@@ -13,14 +13,15 @@
 9. [Real-time Communication](#9-real-time-communication)
 10. [Image Handling](#10-image-handling)
 11. [AI-Powered Article Creation](#11-ai-powered-article-creation)
-12. [Performance Considerations](#12-performance-considerations)
-13. [Testing Strategy](#13-testing-strategy)
-14. [Deployment Guidelines](#14-deployment-guidelines)
-15. [Future Enhancements](#15-future-enhancements)
+12. [Price Guessing Game](#12-price-guessing-game)
+13. [Performance Considerations](#13-performance-considerations)
+14. [Testing Strategy](#14-testing-strategy)
+15. [Deployment Guidelines](#15-deployment-guidelines)
+16. [Future Enhancements](#16-future-enhancements)
 
 ## 1. Project Overview
 
-NODE-PRO Mobile is a comprehensive article and inventory management system with both web and mobile interfaces. It's designed to provide real-time updates, secure authentication, efficient CRUD operations on articles, and now includes an AI-powered article creation feature.
+NODE-PRO Mobile is a comprehensive article and inventory management system with both web and mobile interfaces. It's designed to provide real-time updates, secure authentication, efficient CRUD operations on articles, and now includes an AI-powered article creation feature and a Price Guessing Game.
 
 ### Key Features:
 
@@ -32,6 +33,7 @@ NODE-PRO Mobile is a comprehensive article and inventory management system with 
 - Search functionality
 - Responsive web interface
 - Native mobile app with dark mode support
+- Price Guessing Game
 
 ## 2. System Architecture
 
@@ -60,7 +62,9 @@ The project follows a microservices architecture with the following components:
 - Expo
 - React Navigation
 - Axios for API calls
+- Expo SecureStore for token storage
 - Expo ImagePicker for image selection
+- AsyncStorage for local data storage
 - OpenAI API for AI-powered article creation
 
 ### Key Features:
@@ -71,13 +75,14 @@ The project follows a microservices architecture with the following components:
 4. **Dark Mode**: Theme switching capability
 5. **Image Picker**: Integration with device camera and gallery
 6. **AI-Powered Article Creation**: Uses OpenAI's GPT model to analyze images and generate article details
+7. **Price Guessing Game**: Locally implemented game using stored article data
 
 ### Design Patterns:
 
 1. **Presentational and Container Components**: Separates logic from UI
 2. **Higher-Order Components**: For shared functionality (e.g., authentication checks)
 3. **Render Props**: For component composition and logic sharing
-4. **Custom Hooks**: For reusable logic, such as AI processing
+4. **Custom Hooks**: For reusable logic, such as AI processing and theme management
 
 ## 6. Database Schema
 
@@ -85,9 +90,7 @@ The project follows a microservices architecture with the following components:
 
 ## 7. API Endpoints
 
-(Add the following new endpoint to the existing list)
-
-- POST `/api/articles/ai-create`: Create a new article using AI-generated data
+(No changes to this section)
 
 ## 8. Authentication and Security
 
@@ -99,37 +102,42 @@ The project follows a microservices architecture with the following components:
 
 ## 10. Image Handling
 
-(Add the following point to the existing list)
-
-5. **AI Processing**: Images are sent to the OpenAI API for analysis and article detail generation
+(No changes to this section)
 
 ## 11. AI-Powered Article Creation
 
-1. **Image Capture**: Users can take a photo or select an image from their gallery
-2. **AI Processing**: The image is sent to the OpenAI API for analysis
-3. **Data Generation**: The AI generates article details based on the image analysis
-4. **User Review**: Users can review and edit the AI-generated data before submission
-5. **Article Creation**: The article is created with the AI-generated (and potentially user-edited) data
+(No changes to this section)
 
-## 12. Performance Considerations
+## 12. Price Guessing Game
 
-(Add the following point to the existing list)
+1. **Game Logic**: Implemented entirely on the frontend using locally stored article data
+2. **Data Source**: Uses articles stored in AsyncStorage, which are synced with the backend during the article list fetch
+3. **Gameplay**:
+   - Randomly selects an article from the local storage
+   - Displays article details (excluding price) to the user
+   - User submits a guess for the article's price
+   - Game calculates the difference between the guess and actual price
+   - Points are awarded based on the accuracy of the guess
+4. **UI**: Integrated into the main navigation, accessible from the home screen
+5. **State Management**: Uses React hooks (useState, useEffect) for local state management
 
-6. **AI Request Optimization**: Implement caching or rate limiting for AI requests to manage API usage and costs
-
-## 13. Testing Strategy
-
-(Add the following point to the existing list)
-
-5. **AI Integration Testing**: Implement tests to ensure proper integration with the OpenAI API and correct handling of AI-generated data
-
-## 14. Deployment Guidelines
+## 13. Performance Considerations
 
 (Add the following point to the existing list)
 
-7. **AI API Key Management**: Securely manage and rotate the OpenAI API key, ensuring it's not exposed in the client-side code
+7. **Local Data Usage**: The Price Guessing Game uses locally stored data to reduce API calls and improve responsiveness
 
-## 15. Future Enhancements
+## 14. Testing Strategy
+
+(Add the following point to the existing list)
+
+6. **Game Logic Testing**: Implement unit tests for the Price Guessing Game logic to ensure correct point calculation and random article selection
+
+## 15. Deployment Guidelines
+
+(No changes to this section)
+
+## 16. Future Enhancements
 
 1. Implement user roles and permissions
 2. Add data analytics and reporting features
@@ -139,5 +147,7 @@ The project follows a microservices architecture with the following components:
 6. Implement a more robust state management solution (e.g., Redux) if the app complexity increases
 7. Enhance AI-powered article creation with more detailed analysis and category suggestions
 8. Implement multi-language support for AI-generated content
+9. Expand the Price Guessing Game with leaderboards and multiplayer functionality
+10. Integrate social sharing features for game results
 
-This documentation provides a comprehensive overview of the NODE-PRO Mobile project's technical aspects, including the new AI-powered article creation feature. It serves as a guide for developers working on the project and can be updated as the project evolves.
+This documentation provides a comprehensive overview of the NODE-PRO Mobile project's technical aspects, including the new AI-powered article creation feature and the Price Guessing Game. It serves as a guide for developers working on the project and can be updated as the project evolves.

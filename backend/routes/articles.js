@@ -30,7 +30,6 @@ router.post('/', auth, upload.single('image'), resizeImage, async (req, res) => 
 
     const broadcastArticle = { ...article.toObject(), image: article.image ? true : false };
 
-    // Get the WebSocket server instance
     const wss = req.app.get('wss');
     broadcast(wss, { type: 'newArticle', data: broadcastArticle });
 

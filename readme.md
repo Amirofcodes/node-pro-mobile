@@ -13,11 +13,11 @@ NODE-PRO Mobile est une application full-stack pour la gestion d'articles et d'i
 - Interface mobile conviviale
 - Support du mode sombre (mobile)
 - Fonctionnalité de recherche
+- Jeu de devinette de prix
 
-## Nouvelles Fonctionnalités
+## Nouvelle fonctionnalité : Jeu de devinette de prix
 
-- **Création d'Articles Assistée par IA** : Utilisez l'appareil photo ou la galerie pour prendre une photo d'un article. L'IA analysera l'image et générera automatiquement les détails de l'article.
-- **Amélioration de la Création Manuelle d'Articles** : Interface utilisateur améliorée pour la création manuelle d'articles, avec une meilleure gestion des images et des champs de saisie.
+Le jeu de devinette de prix est une nouvelle fonctionnalité qui permet aux utilisateurs de deviner le prix d'articles sélectionnés au hasard dans l'inventaire. Ce jeu est entièrement implémenté côté frontend et utilise les données d'articles stockées localement pour une expérience utilisateur fluide.
 
 ## Stack Technologique
 
@@ -45,6 +45,7 @@ NODE-PRO Mobile est une application full-stack pour la gestion d'articles et d'i
 - Axios pour les appels API
 - Expo SecureStore pour le stockage des tokens
 - Expo ImagePicker pour la sélection d'images
+- AsyncStorage pour le stockage local des données
 
 ## Installation
 
@@ -81,7 +82,7 @@ NODE-PRO Mobile est une application full-stack pour la gestion d'articles et d'i
 
 4. Démarrez le serveur backend :
    ```
-   npm start
+   npm run dev
    ```
 
 ### Configuration du Frontend Web
@@ -139,21 +140,17 @@ NODE-PRO Mobile est une application full-stack pour la gestion d'articles et d'i
 1. Ouvrez l'application web dans votre navigateur.
 2. Inscrivez-vous pour un nouveau compte ou connectez-vous avec des identifiants existants.
 3. Utilisez les boutons de navigation pour visualiser, créer, éditer ou supprimer des articles.
-4. Pour créer un nouvel article, vous pouvez soit utiliser la méthode manuelle, soit utiliser la fonction de création assistée par IA.
-5. Profitez des mises à jour en temps réel sur tous les clients connectés.
+4. Profitez des mises à jour en temps réel sur tous les clients connectés.
 
 ### Application Mobile
 
 1. Ouvrez l'application mobile en utilisant Expo Go.
 2. Inscrivez-vous pour un nouveau compte ou connectez-vous avec des identifiants existants.
 3. Naviguez dans l'application en utilisant la barre de navigation inférieure.
-4. Pour créer un nouvel article :
-   - Utilisez le bouton "Créer un Article" pour la création manuelle.
-   - Utilisez le bouton "AI Article Creation" pour la création assistée par IA.
-5. Lors de la création assistée par IA, prenez une photo ou choisissez une image de la galerie. L'IA générera automatiquement les détails de l'article.
-6. Visualisez, créez, éditez ou supprimez des articles selon vos besoins.
-7. Utilisez la fonctionnalité de recherche pour trouver des articles spécifiques.
-8. Basculez entre les modes clair et sombre dans la section profil.
+4. Visualisez, créez, éditez ou supprimez des articles selon vos besoins.
+5. Utilisez la fonctionnalité de recherche pour trouver des articles spécifiques.
+6. Jouez au jeu de devinette de prix en le sélectionnant depuis l'écran d'accueil.
+7. Basculez entre les modes clair et sombre dans la section profil.
 
 ## Structure du Projet
 

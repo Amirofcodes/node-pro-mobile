@@ -6,16 +6,22 @@ NODE-PRO Mobile is a full-stack application for managing articles and inventory,
 
 - User authentication (register, login, logout)
 - Article management (create, read, update, delete)
+- AI-powered article creation
 - Real-time updates using WebSockets
 - Image upload and handling
 - Responsive web interface
-- User-friendly mobile interface
-- Dark mode support (mobile)
+- User-friendly mobile app with dark mode support
 - Search functionality
+- Price Guessing Game
+
+## New Feature: Price Guessing Game
+
+The Price Guessing Game is a new feature that allows users to guess the price of randomly selected articles from the inventory. This game is implemented entirely on the frontend and uses locally stored article data for a smooth user experience.
 
 ## Tech Stack
 
 ### Backend
+
 - Node.js
 - Express.js
 - MongoDB with Mongoose
@@ -25,21 +31,25 @@ NODE-PRO Mobile is a full-stack application for managing articles and inventory,
 - Sharp for image processing
 
 ### Web Frontend
+
 - HTML5
 - CSS3
 - Vanilla JavaScript
 - Fetch API for HTTP requests
 
 ### Mobile Frontend
+
 - React Native with Expo
 - React Navigation
 - Axios for API calls
 - Expo SecureStore for token storage
 - Expo ImagePicker for image selection
+- AsyncStorage for local data storage
 
 ## Installation
 
 ### Prerequisites
+
 - Node.js (v14 or later)
 - npm or yarn
 - MongoDB
@@ -48,18 +58,21 @@ NODE-PRO Mobile is a full-stack application for managing articles and inventory,
 ### Backend Setup
 
 1. Clone the repository:
+
    ```
    git clone https://github.com/your-username/node-pro-mobile.git
    cd node-pro-mobile
    ```
 
 2. Install backend dependencies:
+
    ```
    cd backend
    npm install
    ```
 
 3. Create a `.env` file in the `backend` directory with the following content:
+
    ```
    PORT=3000
    MONGO_URI=mongodb://localhost:27017/nodepro
@@ -74,11 +87,13 @@ NODE-PRO Mobile is a full-stack application for managing articles and inventory,
 ### Web Frontend Setup
 
 1. Navigate to the web frontend directory:
+
    ```
    cd ../frontend/web
    ```
 
 2. Install dependencies:
+
    ```
    npm install
    ```
@@ -86,6 +101,7 @@ NODE-PRO Mobile is a full-stack application for managing articles and inventory,
 3. Update the `public/js/config.js` file with your backend server's URL if necessary.
 
 4. Start the web server:
+
    ```
    npm start
    ```
@@ -95,11 +111,13 @@ NODE-PRO Mobile is a full-stack application for managing articles and inventory,
 ### Mobile Frontend Setup
 
 1. Navigate to the mobile frontend directory:
+
    ```
    cd ../mobile/mobile-pro
    ```
 
 2. Install dependencies:
+
    ```
    npm install
    ```
@@ -107,6 +125,7 @@ NODE-PRO Mobile is a full-stack application for managing articles and inventory,
 3. Update the `src/config/config.js` file with your backend server's IP address.
 
 4. Start the Expo development server:
+
    ```
    npx expo start
    ```
@@ -116,18 +135,21 @@ NODE-PRO Mobile is a full-stack application for managing articles and inventory,
 ## Usage
 
 ### Web Application
+
 1. Open the web application in your browser.
 2. Register a new account or log in with existing credentials.
 3. Use the navigation buttons to view, create, edit, or delete articles.
 4. Enjoy real-time updates across all connected clients.
 
 ### Mobile Application
+
 1. Open the mobile app using Expo Go.
 2. Register a new account or log in with existing credentials.
 3. Navigate through the app using the bottom tab navigation.
 4. View, create, edit, or delete articles as needed.
 5. Use the search functionality to find specific articles.
-6. Toggle between light and dark modes in the profile section.
+6. Play the Price Guessing Game by selecting it from the home screen.
+7. Toggle between light and dark modes in the profile section.
 
 ## Project Structure
 

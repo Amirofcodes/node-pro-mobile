@@ -41,10 +41,16 @@ const HomeScreen = () => {
       color: "#9C27B0",
     },
     {
+      title: "Price Guessing Game",
+      icon: "game-controller",
+      screen: "PriceGuessingGame",
+      color: "#E91E63",
+    },
+    {
       title: "My Profile",
       icon: "person",
       screen: "Profile",
-      color: "#E91E63",
+      color: "#607D8B",
     },
   ];
 
