@@ -35,3 +35,7 @@ src/config/env.js
 
 # typescript
 *.tsbuildinfo
+
+# Ignore Expo and IDE configuration files
+.expo/
+.idea/
