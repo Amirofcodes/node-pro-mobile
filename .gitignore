@@ -4,3 +4,6 @@ node_modules/
 .DS_Store
 codebase.md
 env.js
+# Ignore Expo and IDE configuration files
+.expo/
+.idea/
