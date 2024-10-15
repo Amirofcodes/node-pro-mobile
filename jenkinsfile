@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODEJS_HOME = tool name: 'NodeJS' // Make sure you have a NodeJS tool configured in Jenkins
+        NODEJS_HOME = tool name: 'NodeJS' // Ensure you have NodeJS installed in Jenkins
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
     }
 
@@ -21,18 +21,18 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'npm test'  // Adjust if you have different test commands
+                sh 'npm test'  // Modify this based on your project's test command
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Build completed successfully!'
         }
 
         failure {
-            echo 'Pipeline failed. Check logs for details.'
+            echo 'Build failed. Please check the logs.'
         }
     }
 }
