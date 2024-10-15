@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        NODEJS_HOME = tool name: 'NodeJS' // Make sure you have a NodeJS tool configured in Jenkins
+        PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Amirofcodes/node-pro-mobile.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'  // Adjust if you have different test commands
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed. Check logs for details.'
+        }
+    }
+}
+
